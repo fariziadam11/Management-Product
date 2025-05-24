@@ -176,24 +176,22 @@
                                         <i class="bi bi-eye"></i>
                                     </a>
 
-                                    @can('edit users')
-                                    <a href="{{ route('users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-100 hover:bg-indigo-200 p-1.5 rounded-md transition-colors duration-150">
-                                        <i class="bi bi-pencil"></i>
-                                    </a>
-                                    @endcan
+                                    @role('admin')
+                                        <a href="{{ route('users.edit', $user->id) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-100 hover:bg-indigo-200 p-1.5 rounded-md">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
 
-                                    @can('delete users')
-                                    @if(auth()->id() != $user->id)
-                                    <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline-block">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 p-1.5 rounded-md transition-colors duration-150"
-                                                onclick="return confirm('Are you sure you want to delete this user?')">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </form>
-                                    @endif
-                                    @endcan
+                                        @if(auth()->id() != $user->id)
+                                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline-block">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 p-1.5 rounded-md"
+                                                    onclick="return confirm('Are you sure you want to delete this user?')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endif
+                                    @endrole
                                 </div>
                             </td>
                         </tr>

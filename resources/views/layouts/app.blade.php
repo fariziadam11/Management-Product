@@ -66,31 +66,34 @@
         @include('components.tailwind.navbar')
 
         <!-- Page Container -->
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex flex-1">
             @auth
             <!-- Sidebar -->
             @include('components.tailwind.sidebar')
             @endauth
 
-            <!-- Main Content -->
-            <main class="flex-1 relative overflow-y-auto focus:outline-none {{ auth()->check() ? 'md:ml-64' : '' }} pt-4">
-                <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
-                    <!-- Page Heading -->
-                    @include('components.tailwind.page-heading')
+            <!-- Main Content Wrapper -->
+            <div class="flex flex-col flex-1 {{ auth()->check() ? 'md:ml-64' : '' }}">
+                <!-- Main Content -->
+                <main class="flex-1 overflow-y-auto focus:outline-none pt-4">
+                    <div class="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+                        <!-- Page Heading -->
+                        @include('components.tailwind.page-heading')
 
-                    <!-- Alerts -->
-                    @include('components.tailwind.alerts')
+                        <!-- Alerts -->
+                        @include('components.tailwind.alerts')
 
-                    <!-- Page Content -->
-                    <div class="py-4">
-                        @yield('content')
+                        <!-- Page Content -->
+                        <div class="py-4">
+                            @yield('content')
+                        </div>
                     </div>
-                </div>
-            </main>
-        </div>
+                </main>
 
-        <!-- Footer -->
-        @include('components.tailwind.footer')
+                <!-- Footer -->
+                @include('components.tailwind.footer')
+            </div>
+        </div>
     </div>
 
     <!-- Scripts (includes Alpine.js) -->

@@ -149,94 +149,74 @@
                 </div>
             </div>
 
-            <!-- Role Audit History -->
-            <div class="bg-white shadow-lg rounded-lg mb-6">
-                <div class="bg-gray-50 px-6 py-4 border-b border-gray-200">
-                    <h6 class="text-lg font-semibold text-blue-600">Audit History</h6>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+                <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
+                    <h2 class="text-lg font-semibold text-blue-600">Recent Activity</h2>
                 </div>
-                <div class="p-6">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Changes</th>
-                                    <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                @forelse($role->audits()->with('user')->latest()->take(10)->get() as $audit)
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-4 py-3">
-                                        @if($audit->user)
-                                            <div class="flex items-center">
-                                                <img class="w-6 h-6 rounded-full mr-2" src="https://ui-avatars.com/api/?name={{ urlencode($audit->user->name) }}&background=4e73df&color=ffffff&size=24" alt="{{ $audit->user->name }}">
-                                                <span class="text-sm font-medium text-gray-900">{{ $audit->user->name }}</span>
-                                            </div>
-                                        @else
-                                            <span class="text-sm text-gray-500">System</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        @if($audit->event == 'created')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Created</span>
-                                        @elseif($audit->event == 'updated')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Updated</span>
-                                        @elseif($audit->event == 'deleted')
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Deleted</span>
-                                        @else
-                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">{{ $audit->event }}</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        @if(!empty($audit->new_values))
-                                            <button class="inline-flex items-center px-3 py-1.5 border border-blue-300 text-sm font-medium rounded-md text-blue-700 bg-blue-50 hover:bg-blue-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                                    type="button"
-                                                    onclick="toggleCollapse('auditDetails{{ $audit->id }}')"
-                                                    aria-expanded="false">
-                                                View Changes
-                                            </button>
-                                            <div class="hidden mt-2" id="auditDetails{{ $audit->id }}">
-                                                <div class="bg-gray-50 border border-gray-200 rounded-md p-4">
-                                                    <dl class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                                                        @foreach($audit->new_values as $key => $value)
-                                                            <div>
-                                                                <dt class="text-sm font-medium text-gray-500">{{ ucwords(str_replace('_', ' ', $key)) }}</dt>
-                                                                <dd class="text-sm text-gray-900">
-                                                                    @if(is_array($value))
-                                                                        {{ json_encode($value) }}
-                                                                    @elseif(is_bool($value))
-                                                                        {{ $value ? 'Yes' : 'No' }}
-                                                                    @else
-                                                                        {{ $value }}
-                                                                    @endif
-                                                                </dd>
-                                                            </div>
+                <div class="p-4 sm:p-6">
+                    @if(count($user->audits) > 0)
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach($user->audits->take(10) as $audit)
+                                        <tr class="hover:bg-gray-50">
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $audit->created_at->format('M d, Y H:i') }}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                @if($audit->event == 'created')
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Created</span>
+                                                @elseif($audit->event == 'updated')
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Updated</span>
+                                                @elseif($audit->event == 'deleted')
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Deleted</span>
+                                                @else
+                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">{{ ucfirst($audit->event) }}</span>
+                                                @endif
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500">
+                                                @if($audit->event == 'updated')
+                                                    <ul class="list-none space-y-1 m-0 p-0">
+                                                        @foreach($audit->getModified() as $field => $values)
+                                                            <li>
+                                                                <span class="font-medium">{{ ucfirst($field) }}</span>:
+                                                                @if(is_array($values['old']))
+                                                                    Changed
+                                                                @else
+                                                                    {{ Str::limit($values['old'], 20) }} → {{ Str::limit($values['new'], 20) }}
+                                                                @endif
+                                                            </li>
                                                         @endforeach
-                                                    </dl>
-                                                </div>
-                                            </div>
-                                        @else
-                                            <span class="text-sm text-gray-500">No changes recorded</span>
-                                        @endif
-                                    </td>
-                                    <td class="px-4 py-3 text-sm text-gray-900">{{ $audit->created_at->format('M d, Y h:i A') }}</td>
-                                </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">No audit records found</td>
-                                </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
-                    </div>
-
-                    @if($role->audits()->count() > 10)
-                        <div class="text-center mt-4">
-                            <a href="{{ route('audits.model', ['type' => 'role', 'id' => $role->id]) }}" class="inline-flex items-center px-4 py-2 border border-blue-300 text-sm font-medium rounded-md text-blue-700 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                View All Audit History
+                                                    </ul>
+                                                @else
+                                                    {{ ucfirst($audit->event) }} {{ class_basename($audit->auditable_type) }}
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-6">
+                            <a href="{{ route('audits.model', ['type' => 'users', 'id' => $user->id]) }}" class="inline-flex items-center px-3 py-1.5 border border-blue-600 text-blue-600 hover:bg-blue-50 rounded-md text-sm font-medium transition duration-150 ease-in-out">
+                                View All Activity
                             </a>
+                        </div>
+                    @else
+                        <div class="bg-blue-50 border-l-4 border-blue-400 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-info-circle text-blue-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-blue-700">No activity records found for this user.</p>
+                                </div>
+                            </div>
                         </div>
                     @endif
                 </div>
