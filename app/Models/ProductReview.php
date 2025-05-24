@@ -13,6 +13,13 @@ class ProductReview extends Model implements Auditable
     use HasFactory, SoftDeletes, AuditableTrait;
     
     /**
+     * Review status constants
+     */
+    const STATUS_IN_REVIEW = 'in_review';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_REJECTED = 'rejected';
+    
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -24,6 +31,7 @@ class ProductReview extends Model implements Auditable
         'title',
         'content',
         'rating',
+        'status',
         'is_verified',
         'additional_data',
         'attachment',
@@ -68,6 +76,10 @@ class ProductReview extends Model implements Auditable
         
         static::creating(function ($model) {
             $model->uuid = (string) \Illuminate\Support\Str::uuid();
+            // Set default status to in_review for new reviews
+            if (!$model->status) {
+                $model->status = self::STATUS_IN_REVIEW;
+            }
         });
     }
 }

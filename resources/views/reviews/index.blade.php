@@ -65,8 +65,8 @@
                     <div>
                         <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg" name="status">
                             <option value="">All Status</option>
+                            <option value="in_review" {{ request('status') == 'in_review' ? 'selected' : '' }}>In Review</option>
                             <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
-                            <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                         </select>
                     </div>
@@ -163,9 +163,9 @@
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-sm font-medium text-gray-500">Pending</p>
-                    <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $reviews->where('status', 'pending')->count() }}</p>
-                    <p class="mt-1 text-xs text-gray-500">{{ $reviews->count() > 0 ? round(($reviews->where('status', 'pending')->count() / $reviews->count()) * 100) : 0 }}% of total</p>
+                    <p class="text-sm font-medium text-gray-500">In Review</p>
+                    <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $reviews->where('status', 'in_review')->count() }}</p>
+                    <p class="mt-1 text-xs text-gray-500">{{ $reviews->count() > 0 ? round(($reviews->where('status', 'in_review')->count() / $reviews->count()) * 100) : 0 }}% of total</p>
                 </div>
                 <div class="p-3 rounded-lg bg-orange-50 text-orange-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -292,13 +292,17 @@
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                                         Approved
                                     </span>
-                                @elseif($review->status == 'pending')
+                                @elseif($review->status == 'in_review')
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                        Pending
+                                        In Review
                                     </span>
                                 @elseif($review->status == 'rejected')
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         Rejected
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                        Unknown
                                     </span>
                                 @endif
                             </td>
@@ -322,6 +326,28 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg>
                                     </a>
+                                    @if($review->status != 'approved')
+                                    <form action="{{ route('reviews.approve', $review) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="inline-flex items-center p-1.5 border border-green-300 rounded-lg text-green-600 bg-white hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors" title="Approve Review">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                    @endif
+                                    @if($review->status != 'rejected')
+                                    <form action="{{ route('reviews.reject', $review) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <button type="submit" class="inline-flex items-center p-1.5 border border-red-300 rounded-lg text-red-600 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors" title="Reject Review">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
+                                    </form>
+                                    @endif
                                     <form action="{{ route('reviews.destroy', $review) }}" method="POST" class="w-full">
                                         @csrf
                                         @method('DELETE')

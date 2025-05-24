@@ -44,6 +44,11 @@ class ProductReviewController extends Controller
             $query->where('rating', $request->input('rating'));
         }
         
+        // Filter by status
+        if ($request->has('status') && $request->input('status') !== '') {
+            $query->where('status', $request->input('status'));
+        }
+        
         // Filter by verification status
         if ($request->has('is_verified')) {
             $isVerified = $request->input('is_verified');
@@ -174,6 +179,7 @@ class ProductReviewController extends Controller
             'content' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
             'is_verified' => 'boolean',
+            'status' => 'nullable|string|in:' . ProductReview::STATUS_IN_REVIEW . ',' . ProductReview::STATUS_APPROVED . ',' . ProductReview::STATUS_REJECTED,
             'attachment' => 'nullable|file|mimes:pdf|min:100|max:500',
         ]);
         
@@ -191,6 +197,11 @@ class ProductReviewController extends Controller
             'is_verified' => $request->input('is_verified', false),
             'additional_data' => $request->input('additional_data', []),
         ];
+        
+        // Update status if provided
+        if ($request->has('status')) {
+            $reviewData['status'] = $request->input('status');
+        }
         
         // Set verified_at timestamp if review is being verified
         if ($request->input('is_verified') && !$review->is_verified) {
@@ -235,5 +246,41 @@ class ProductReviewController extends Controller
         
         return redirect()->route('reviews.index')
             ->with('success', 'Review deleted successfully.');
+    }
+    
+    /**
+     * Approve the specified review.
+     *
+     * @param  \App\Models\ProductReview  $review
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function approve(ProductReview $review)
+    {
+        $review->update([
+            'status' => ProductReview::STATUS_APPROVED,
+            'is_verified' => true,
+            'verified_at' => now()
+        ]);
+        
+        return redirect()->back()
+            ->with('success', 'Review approved successfully.');
+    }
+    
+    /**
+     * Reject the specified review.
+     *
+     * @param  \App\Models\ProductReview  $review
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function reject(ProductReview $review)
+    {
+        $review->update([
+            'status' => ProductReview::STATUS_REJECTED,
+            'is_verified' => false,
+            'verified_at' => null
+        ]);
+        
+        return redirect()->back()
+            ->with('success', 'Review rejected successfully.');
     }
 }

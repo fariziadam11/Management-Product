@@ -49,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
 
     // Product Reviews
     Route::resource('reviews', ProductReviewController::class);
+    Route::put('reviews/{review}/approve', [ProductReviewController::class, 'approve'])->name('reviews.approve');
+    Route::put('reviews/{review}/reject', [ProductReviewController::class, 'reject'])->name('reviews.reject');
 
     // Audits
     Route::get('/audits', [AuditController::class, 'index'])->name('audits.index');

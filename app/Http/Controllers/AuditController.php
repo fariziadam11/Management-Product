@@ -35,9 +35,19 @@ class AuditController extends Controller
         
         // Filter by auditable type
         if ($request->has('auditable_type') && $request->input('auditable_type') !== '') {
-            $auditableType = $this->getAuditableType($request->input('auditable_type'));
-            if ($auditableType) {
-                $query->where('auditable_type', $auditableType);
+            $type = $request->input('auditable_type');
+            
+            // Map simple type names to their corresponding model classes
+            $typeMap = [
+                'user' => User::class,
+                'role' => Role::class,
+                'category' => Category::class,
+                'product' => Product::class,
+                'product_review' => ProductReview::class,
+            ];
+            
+            if (isset($typeMap[$type])) {
+                $query->where('auditable_type', $typeMap[$type]);
             }
         }
         
@@ -48,7 +58,12 @@ class AuditController extends Controller
         
         // Filter by user
         if ($request->has('user_id') && $request->input('user_id') !== '') {
-            $query->where('user_id', $request->input('user_id'));
+            $userId = $request->input('user_id');
+            // For polymorphic relationships, we need to specify both user_id and user_type
+            $query->where(function($q) use ($userId) {
+                $q->where('user_id', (int)$userId)
+                  ->where('user_type', 'App\\Models\\User');
+            });
         }
         
         // Filter by date range
