@@ -3,125 +3,125 @@
 @section('page_heading', 'Create User')
 
 @section('page_actions')
-<a href="{{ route('users.index') }}" class="btn btn-secondary">
-    <i class="bi bi-arrow-left"></i> Back to Users
+<a href="{{ route('users.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition duration-150 ease-in-out">
+    <i class="bi bi-arrow-left mr-2"></i> Back to Users
 </a>
 @endsection
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">User Information</h6>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('users.store') }}" method="POST">
-                        @csrf
+<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="w-full">
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200">
+                <h2 class="text-lg font-semibold text-blue-600">User Information</h2>
+            </div>
+            <div class="p-4 sm:p-6">
+                <form action="{{ route('users.store') }}" method="POST">
+                    @csrf
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <!-- Basic Information -->
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
-                                    @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
-                                    <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" required>
-                                    @error('email')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" required>
-                                    @error('password')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-                                </div>
+                    <div class="flex flex-wrap -mx-3">
+                        <div class="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                            <!-- Basic Information -->
+                            <div class="mb-4">
+                                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name <span class="text-red-500">*</span></label>
+                                <input type="text" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 @error('name') border-red-500 @enderror" id="name" name="name" value="{{ old('name') }}" required>
+                                @error('name')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
 
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="role_id" class="form-label">Role <span class="text-danger">*</span></label>
-                                    <select class="form-select @error('role_id') is-invalid @enderror" id="role_id" name="role_id" required>
-                                        <option value="">Select Role</option>
-                                        @foreach($roles as $role)
-                                            <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
-                                                {{ $role->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('role_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email <span class="text-red-500">*</span></label>
+                                <input type="email" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 @error('email') border-red-500 @enderror" id="email" name="email" value="{{ old('email') }}" required>
+                                @error('email')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="phone" class="form-label">Phone Number</label>
-                                    <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone') }}">
-                                    @error('phone')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <div class="mb-4">
+                                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password <span class="text-red-500">*</span></label>
+                                <input type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 @error('password') border-red-500 @enderror" id="password" name="password" required>
+                                @error('password')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="birthday" class="form-label">Birthday</label>
-                                    <input type="date" class="form-control @error('birthday') is-invalid @enderror" id="birthday" name="birthday" value="{{ old('birthday') }}">
-                                    @error('birthday')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                            <div class="mb-4">
+                                <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password <span class="text-red-500">*</span></label>
+                                <input type="password" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" id="password_confirmation" name="password_confirmation" required>
+                            </div>
+                        </div>
 
-                                <div class="mb-3">
-                                    <label class="form-label d-block">Status</label>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="is_active" id="statusActive" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="statusActive">Active</label>
+                        <div class="w-full md:w-1/2 px-3">
+                            <div class="mb-4">
+                                <label for="role_id" class="block text-sm font-medium text-gray-700 mb-1">Role <span class="text-red-500">*</span></label>
+                                <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 @error('role_id') border-red-500 @enderror" id="role_id" name="role_id" required>
+                                    <option value="">Select Role</option>
+                                    @foreach($roles as $role)
+                                        <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
+                                            {{ $role->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('role_id')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+                                <input type="text" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 @error('phone') border-red-500 @enderror" id="phone" name="phone" value="{{ old('phone') }}">
+                                @error('phone')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="birthday" class="block text-sm font-medium text-gray-700 mb-1">Birthday</label>
+                                <input type="date" class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 @error('birthday') border-red-500 @enderror" id="birthday" name="birthday" value="{{ old('birthday') }}">
+                                @error('birthday')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <div class="flex space-x-4">
+                                    <div class="flex items-center">
+                                        <input class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" type="radio" name="is_active" id="statusActive" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }}>
+                                        <label class="ml-2 text-sm text-gray-700" for="statusActive">Active</label>
                                     </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="is_active" id="statusInactive" value="0" {{ old('is_active') == '0' ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="statusInactive">Inactive</label>
+                                    <div class="flex items-center">
+                                        <input class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" type="radio" name="is_active" id="statusInactive" value="0" {{ old('is_active') == '0' ? 'checked' : '' }}>
+                                        <label class="ml-2 text-sm text-gray-700" for="statusInactive">Inactive</label>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="mb-3">
-                                    <label for="notes" class="form-label">Notes</label>
-                                    <textarea class="form-control @error('notes') is-invalid @enderror" id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
-                                    @error('notes')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                    <div class="mt-6">
+                        <div class="w-full px-3">
+                            <div class="mb-4">
+                                <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                                <textarea class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 @error('notes') border-red-500 @enderror" id="notes" name="notes" rows="3">{{ old('notes') }}</textarea>
+                                @error('notes')
+                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
+                    </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <hr>
-                                <div class="d-flex justify-content-end">
-                                    <button type="reset" class="btn btn-secondary me-2">Reset</button>
-                                    <button type="submit" class="btn btn-primary">Create User</button>
-                                </div>
+                    <div class="mt-6">
+                        <div class="w-full px-3">
+                            <hr class="my-6 border-gray-200">
+                            <div class="flex justify-end space-x-3">
+                                <button type="reset" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition duration-150 ease-in-out">Reset</button>
+                                <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition duration-150 ease-in-out">Create User</button>
                             </div>
                         </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -152,24 +152,24 @@
             if (password.match(/[^a-zA-Z0-9]+/)) strength += 1;
 
             const feedbackElement = document.createElement('div');
-            feedbackElement.className = 'password-strength mt-1';
+            feedbackElement.className = 'password-strength mt-1 text-sm';
 
             switch(strength) {
                 case 0:
                 case 1:
-                    feedbackElement.innerHTML = '<span class="text-danger">Very Weak</span>';
+                    feedbackElement.innerHTML = '<span class="text-red-500">Very Weak</span>';
                     break;
                 case 2:
-                    feedbackElement.innerHTML = '<span class="text-warning">Weak</span>';
+                    feedbackElement.innerHTML = '<span class="text-yellow-500">Weak</span>';
                     break;
                 case 3:
-                    feedbackElement.innerHTML = '<span class="text-info">Medium</span>';
+                    feedbackElement.innerHTML = '<span class="text-blue-400">Medium</span>';
                     break;
                 case 4:
-                    feedbackElement.innerHTML = '<span class="text-primary">Strong</span>';
+                    feedbackElement.innerHTML = '<span class="text-blue-600">Strong</span>';
                     break;
                 case 5:
-                    feedbackElement.innerHTML = '<span class="text-success">Very Strong</span>';
+                    feedbackElement.innerHTML = '<span class="text-green-500">Very Strong</span>';
                     break;
             }
 
@@ -186,14 +186,14 @@
             const confirmPassword = confirmPasswordInput.value;
 
             const feedbackElement = document.createElement('div');
-            feedbackElement.className = 'password-match mt-1';
+            feedbackElement.className = 'password-match mt-1 text-sm';
 
             if (confirmPassword === '') {
                 feedbackElement.innerHTML = '';
             } else if (password === confirmPassword) {
-                feedbackElement.innerHTML = '<span class="text-success">Passwords match</span>';
+                feedbackElement.innerHTML = '<span class="text-green-500">Passwords match</span>';
             } else {
-                feedbackElement.innerHTML = '<span class="text-danger">Passwords do not match</span>';
+                feedbackElement.innerHTML = '<span class="text-red-500">Passwords do not match</span>';
             }
 
             const existingFeedback = confirmPasswordInput.parentNode.querySelector('.password-match');

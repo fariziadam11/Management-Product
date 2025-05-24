@@ -26,34 +26,7 @@
                 @auth
 
                 <!-- Notifications -->
-                <div x-data="{ open: false }" class="relative">
-                    <button
-                        @click="open = !open"
-                        class="p-1.5 rounded-full text-blue-100 hover:text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-white transition-colors duration-200"
-                        aria-label="View notifications"
-                    >
-                        <i class="bi bi-bell text-lg sm:text-xl"></i>
-                        @if(auth()->user()->unreadNotifications->count() > 0)
-                            <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-blue-800"></span>
-                        @endif
-                    </button>
-
-                    <!-- Notifications Dropdown -->
-                    <div
-                        x-show="open"
-                        x-transition:enter="transition ease-out duration-200"
-                        x-transition:enter-start="transform opacity-0 scale-95"
-                        x-transition:enter-end="transform opacity-100 scale-100"
-                        x-transition:leave="transition ease-in duration-150"
-                        x-transition:leave-start="transform opacity-100 scale-100"
-                        x-transition:leave-end="transform opacity-0 scale-95"
-                        @click.outside="open = false"
-                        class="origin-top-right absolute right-0 mt-2 w-72 sm:w-80 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 max-h-[80vh] overflow-y-auto"
-                        style="display: none;"
-                    >
-                        @include('components.notifications')
-                    </div>
-                </div>
+                @include('components.tailwind.notifications-dropdown')
                 @endauth
 
                 <!-- User Menu -->

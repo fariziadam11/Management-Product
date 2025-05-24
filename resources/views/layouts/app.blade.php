@@ -24,7 +24,7 @@
                 display: inline;
             }
         }
-        
+
         /* Select2 styling */
         .select2-container--default .select2-selection--single {
             height: 38px;
@@ -38,13 +38,13 @@
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             line-height: 24px;
         }
-        
+
         /* Responsive table styles */
         .responsive-table-wrapper {
             overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
-        
+
         /* Fix for mobile overflow issues */
         body, html {
             overflow-x: hidden;
@@ -54,6 +54,11 @@
 
     <!-- Tailwind CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <!-- Fix for Alpine.js elements flashing before initialization -->
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-900">
     <div id="app" class="min-h-screen flex flex-col">
@@ -88,11 +93,8 @@
         @include('components.tailwind.footer')
     </div>
 
-    <!-- Scripts -->
+    <!-- Scripts (includes Alpine.js) -->
     @include('components.tailwind.scripts')
-
-    <!-- Alpine.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
     <!-- Alpine.js initialization for responsive behavior -->
     <script>
@@ -109,7 +111,7 @@
                     return window.innerWidth < 768;
                 }
             });
-            
+
             // Listen for window resize events to update sidebar state
             window.addEventListener('resize', () => {
                 if (window.innerWidth >= 768) {
@@ -118,7 +120,7 @@
                     Alpine.store('app').sidebarOpen = false;
                 }
             });
-            
+
             // Initialize sidebar state on page load
             if (window.innerWidth >= 768) {
                 setTimeout(() => {
@@ -167,7 +169,7 @@
                     });
                 }
             }, 100);
-            
+
             // Make tables responsive
             const tables = document.querySelectorAll('table');
             tables.forEach(table => {

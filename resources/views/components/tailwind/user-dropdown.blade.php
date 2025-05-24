@@ -1,10 +1,11 @@
-<div x-data="{ open: false }" class="relative">
+<div x-data="dropdown" class="relative">
     <button
-        @click="open = !open"
+        @click="toggle()"
         type="button"
         class="flex items-center max-w-xs text-sm bg-blue-700 hover:bg-blue-600 transition-colors duration-200 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-800 focus:ring-white p-0.5 pl-2"
         id="userDropdown"
-        aria-expanded="false"
+        :aria-expanded="open"
+        aria-haspopup="true"
     >
         <span class="sr-only">Open user menu</span>
         <span class="mr-2 hidden md:inline-block text-white font-medium truncate max-w-[120px]">{{ Auth::user()->name }}</span>
@@ -20,9 +21,10 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="transform opacity-100 scale-100"
         x-transition:leave-end="transform opacity-0 scale-95"
-        @click.outside="open = false"
+        @click.outside="close()"
+        @keydown.escape.window="close()"
         class="absolute right-0 mt-2 w-56 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 divide-y divide-gray-100"
-        style="display: none;"
+        x-cloak
     >
         <!-- User Info -->
         <div class="px-4 py-3">

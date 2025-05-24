@@ -1,7 +1,7 @@
-<div x-data="{ open: false }" class="relative ml-3">
+<div x-data="notifications" class="relative ml-3">
     <button 
-        @click="open = !open"
-        @keydown.escape="open = false"
+        @click="toggle()"
+        @keydown.escape="close()"
         type="button" 
         class="relative p-1 text-white hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-800 focus:ring-white rounded-full"
         :aria-expanded="open"
@@ -27,9 +27,9 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="transform opacity-100 scale-100"
         x-transition:leave-end="transform opacity-0 scale-95"
-        @click.away="open = false"
+        @click.outside="close()"
         class="origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-50 max-h-[80vh] overflow-y-auto"
-        style="display: none;"
+        x-cloak
     >
         @include('components.notifications')
     </div>

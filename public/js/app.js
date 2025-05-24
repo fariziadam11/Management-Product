@@ -54,6 +54,27 @@ const UICore = (function() {
         // Close dropdowns when clicking outside
         document.removeEventListener('click', handleDocumentClick);
         document.addEventListener('click', handleDocumentClick);
+        
+        // Close dropdowns when pressing escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeAllDropdowns();
+            }
+        });
+        
+        // Ensure Alpine.js dropdowns close when another one opens
+        document.addEventListener('alpine:initialized', () => {
+            if (window.Alpine) {
+                // Listen for Alpine dropdown opens and close others
+                document.addEventListener('click', function(e) {
+                    // Check if the clicked element is a dropdown toggle with Alpine
+                    if (e.target.closest('[x-data="dropdown"], [x-data="notifications"]')) {
+                        // Close all non-Alpine dropdowns
+                        closeAllDropdowns();
+                    }
+                });
+            }
+        });
     }
 
     function handleDropdownToggle(e) {
