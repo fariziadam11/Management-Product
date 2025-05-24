@@ -23,7 +23,7 @@
         @endif
 
         <!-- Roles -->
-    @if(Auth::user()->hasAnyRole(['admin']))
+    @if(Auth::user()->hasAnyRole(['admin', 'customer', 'manager', 'editor']))
         <a href="{{ route('roles.index') }}"
            class="{{ request()->routeIs('roles.*') ? 'bg-blue-700 text-white shadow-md' : 'text-blue-100 hover:bg-blue-700 hover:bg-opacity-70' }} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200">
             <i class="bi bi-person-badge-fill mr-3 flex-shrink-0 h-5 w-5 {{ request()->routeIs('roles.*') ? 'text-white' : 'text-blue-300 group-hover:text-white' }}"></i>
@@ -32,7 +32,7 @@
         @endif
 
         <!-- Categories -->
-        @if(Auth::user()->hasAnyRole(['admin', 'manager']))
+        @if(Auth::user()->hasAnyRole(['admin', 'manager', 'editor', 'customer']))
         <a href="{{ route('categories.index') }}"
            class="{{ request()->routeIs('categories.*') ? 'bg-blue-700 text-white shadow-md' : 'text-blue-100 hover:bg-blue-700 hover:bg-opacity-70' }} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200">
             <i class="bi bi-folder-fill mr-3 flex-shrink-0 h-5 w-5 {{ request()->routeIs('categories.*') ? 'text-white' : 'text-blue-300 group-hover:text-white' }}"></i>
@@ -41,7 +41,7 @@
         @endif
 
         <!-- Products -->
-        @if(Auth::user()->hasAnyRole(['admin', 'manager', 'editor']))
+        @if(Auth::user()->hasAnyRole(['admin', 'manager', 'editor' , 'customer']))
         <a href="{{ route('products.index') }}"
            class="{{ request()->routeIs('products.*') ? 'bg-blue-700 text-white shadow-md' : 'text-blue-100 hover:bg-blue-700 hover:bg-opacity-70' }} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200">
             <i class="bi bi-box-fill mr-3 flex-shrink-0 h-5 w-5 {{ request()->routeIs('products.*') ? 'text-white' : 'text-blue-300 group-hover:text-white' }}"></i>
@@ -63,7 +63,7 @@
         </a>
 
         <!-- Audits -->
-        @if(Auth::user()->hasAnyRole(['admin']))
+        @if(Auth::user()->hasAnyRole(['admin' , 'manager', 'editor' , 'customer']))
         <a href="{{ route('audits.index') }}"
            class="{{ request()->routeIs('audits.*') ? 'bg-blue-700 text-white shadow-md' : 'text-blue-100 hover:bg-blue-700 hover:bg-opacity-70' }} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200">
             <i class="bi bi-clock-history mr-3 flex-shrink-0 h-5 w-5 {{ request()->routeIs('audits.*') ? 'text-white' : 'text-blue-300 group-hover:text-white' }}"></i>

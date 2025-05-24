@@ -23,7 +23,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="bi bi-search text-gray-400"></i>
                             </div>
-                            <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                            <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 id="search" name="search" placeholder="Search reviews..." value="{{ request('search') }}">
                         </div>
                     </div>
@@ -90,7 +90,7 @@
                 </a>
             </div>
         </div>
-        
+
         @if($reviews->count() > 0)
             <!-- Desktop view (md and above) -->
             <div class="hidden md:block overflow-x-auto">
@@ -187,20 +187,20 @@
                                         <a href="{{ route('reviews.edit', $review) }}" class="inline-flex items-center px-2 py-1 border border-yellow-600 text-xs font-medium rounded text-yellow-600 hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                                             <i class="bi bi-pencil mr-1"></i>
                                         </a>
-                                        <button type="button" 
-                                                @click="$dispatch('open-modal', 'delete-modal-{{ $review->id }}')" 
+                                        <button type="button"
+                                                @click="$dispatch('open-modal', 'delete-modal-{{ $review->id }}')"
                                                 class="inline-flex items-center px-2 py-1 border border-red-600 text-xs font-medium rounded text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                                             <i class="bi bi-trash mr-1"></i>
                                         </button>
                                     </div>
 
                                     <!-- Delete Modal with Alpine.js -->
-                                    <div 
-                                        x-data="{ open: false }" 
-                                        @open-modal.window="if ($event.detail === 'delete-modal-{{ $review->id }}') open = true" 
+                                    <div
+                                        x-data="{ open: false }"
+                                        @open-modal.window="if ($event.detail === 'delete-modal-{{ $review->id }}') open = true"
                                         @keydown.escape.window="open = false"
-                                        x-show="open" 
-                                        class="fixed inset-0 z-50 overflow-y-auto" 
+                                        x-show="open"
+                                        class="fixed inset-0 z-50 overflow-y-auto"
                                         x-transition:enter="transition ease-out duration-300"
                                         x-transition:enter-start="opacity-0"
                                         x-transition:enter-end="opacity-100"
@@ -210,35 +210,35 @@
                                         style="display: none;"
                                     >
                                         <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                                            <div 
-                                                x-show="open" 
-                                                x-transition:enter="ease-out duration-300" 
-                                                x-transition:enter-start="opacity-0" 
-                                                x-transition:enter-end="opacity-100" 
-                                                x-transition:leave="ease-in duration-200" 
-                                                x-transition:leave-start="opacity-100" 
-                                                x-transition:leave-end="opacity-0" 
-                                                @click="open = false" 
-                                                class="fixed inset-0 transition-opacity" 
+                                            <div
+                                                x-show="open"
+                                                x-transition:enter="ease-out duration-300"
+                                                x-transition:enter-start="opacity-0"
+                                                x-transition:enter-end="opacity-100"
+                                                x-transition:leave="ease-in duration-200"
+                                                x-transition:leave-start="opacity-100"
+                                                x-transition:leave-end="opacity-0"
+                                                @click="open = false"
+                                                class="fixed inset-0 transition-opacity"
                                                 aria-hidden="true"
                                             >
                                                 <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
                                             </div>
-                                            
+
                                             <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                                            
-                                            <div 
-                                                x-show="open" 
-                                                x-transition:enter="ease-out duration-300" 
-                                                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
-                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
-                                                x-transition:leave="ease-in duration-200" 
-                                                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
-                                                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
-                                                @click.away="open = false" 
-                                                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" 
-                                                role="dialog" 
-                                                aria-modal="true" 
+
+                                            <div
+                                                x-show="open"
+                                                x-transition:enter="ease-out duration-300"
+                                                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave="ease-in duration-200"
+                                                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                @click.away="open = false"
+                                                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                                                role="dialog"
+                                                aria-modal="true"
                                                 aria-labelledby="modal-headline"
                                             >
                                                 <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
@@ -383,155 +383,155 @@
 </div>
 @endsection
 
+@section('chart_content')
 <!-- Review Statistics -->
-    <div class="row">
-        <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Review Distribution</h6>
-                </div>
-                <div class="card-body">
-                    <div class="chart-area">
-                        <canvas id="reviewDistributionChart"></canvas>
-                    </div>
+<div class="row">
+    <div class="col-xl-8 col-lg-7">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Review Distribution</h6>
+            </div>
+            <div class="card-body">
+                <div class="chart-area">
+                    <canvas id="reviewDistributionChart"></canvas>
                 </div>
             </div>
         </div>
-        <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Rating Summary</h6>
-                </div>
-                <div class="card-body">
-                    <div class="row align-items-center mb-4">
-                        <div class="col-md-4 text-center">
-                            @php
-                                $averageRating = $reviews->avg('rating') ?? 0;
-                                $averageRating = round($averageRating * 2) / 2; // Round to nearest 0.5
+    </div>
+    <div class="col-xl-4 col-lg-5">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3">
+                <h6 class="m-0 font-weight-bold text-primary">Rating Summary</h6>
+            </div>
+            <div class="card-body">
+                <div class="row align-items-center mb-4">
+                    <div class="col-md-4 text-center">
+                        @php
+                            $averageRating = $reviews->avg('rating') ?? 0;
+                            $averageRating = round($averageRating * 2) / 2; // Round to nearest 0.5
 
-                                // Calculate rating counts
-                                $ratingCounts = [
-                                    5 => $reviews->where('rating', 5)->count(),
-                                    4 => $reviews->where('rating', 4)->count(),
-                                    3 => $reviews->where('rating', 3)->count(),
-                                    2 => $reviews->where('rating', 2)->count(),
-                                    1 => $reviews->where('rating', 1)->count(),
-                                ];
+                            // Calculate rating counts
+                            $ratingCounts = [
+                                5 => $reviews->where('rating', 5)->count(),
+                                4 => $reviews->where('rating', 4)->count(),
+                                3 => $reviews->where('rating', 3)->count(),
+                                2 => $reviews->where('rating', 2)->count(),
+                                1 => $reviews->where('rating', 1)->count(),
+                            ];
 
-                                // Calculate rating percentages
-                                $ratingPercentages = [];
-                                $totalReviews = $reviews->count();
-                                if ($totalReviews > 0) {
-                                    foreach ($ratingCounts as $rating => $count) {
-                                        $ratingPercentages[$rating] = ($count / $totalReviews) * 100;
-                                    }
+                            // Calculate rating percentages
+                            $ratingPercentages = [];
+                            $totalReviews = $reviews->count();
+                            if ($totalReviews > 0) {
+                                foreach ($ratingCounts as $rating => $count) {
+                                    $ratingPercentages[$rating] = ($count / $totalReviews) * 100;
                                 }
+                            }
 
-                                // Prepare chart data
-                                $reviewChartData = [
-                                    'labels' => [],
-                                    'data' => []
-                                ];
+                            // Prepare chart data
+                            $reviewChartData = [
+                                'labels' => [],
+                                'data' => []
+                            ];
 
-                                // Get the last 7 days for the chart
-                                for ($i = 6; $i >= 0; $i--) {
-                                    $date = now()->subDays($i)->format('M d');
-                                    $reviewChartData['labels'][] = $date;
+                            // Get the last 7 days for the chart
+                            for ($i = 6; $i >= 0; $i--) {
+                                $date = now()->subDays($i)->format('M d');
+                                $reviewChartData['labels'][] = $date;
 
-                                    // Count reviews for this date
-                                    $dayCount = $reviews->filter(function($review) use ($i) {
-                                        $dateToCheck = now()->subDays($i)->startOfDay();
-                                        return $review->created_at->startOfDay()->equalTo($dateToCheck);
-                                    })->count();
+                                // Count reviews for this date
+                                $dayCount = $reviews->filter(function($review) use ($i) {
+                                    $dateToCheck = now()->subDays($i)->startOfDay();
+                                    return $review->created_at->startOfDay()->equalTo($dateToCheck);
+                                })->count();
 
-                                    $reviewChartData['data'][] = $dayCount;
-                                }
-                            @endphp
-                            <div class="display-4 fw-bold text-primary">{{ number_format($averageRating, 1) }}</div>
-                            <div class="d-flex justify-content-center">
-                                @for($i = 1; $i <= 5; $i++)
-                                    @if($i <= round($averageRating))
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    @else
-                                        <i class="bi bi-star text-muted"></i>
-                                    @endif
-                                @endfor
-                            </div>
-                            @php
-                                $totalReviews = $reviews->total() ?? count($reviews);
-                            @endphp
-                            <div class="text-muted mt-1">{{ $totalReviews }} reviews</div>
+                                $reviewChartData['data'][] = $dayCount;
+                            }
+                        @endphp
+                        <div class="display-4 fw-bold text-primary">{{ number_format($averageRating, 1) }}</div>
+                        <div class="d-flex justify-content-center">
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= round($averageRating))
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                @else
+                                    <i class="bi bi-star text-muted"></i>
+                                @endif
+                            @endfor
                         </div>
-                        <div class="col-md-8">
-                            <div class="mb-1">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">5</span>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1 mx-3">
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $ratingPercentages[5] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[5] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <span>{{ $ratingCounts[5] ?? 0 }}</span>
+                        @php
+                            $totalReviews = $reviews->total() ?? count($reviews);
+                        @endphp
+                        <div class="text-muted mt-1">{{ $totalReviews }} reviews</div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="mb-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">5</span>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 </div>
+                                <div class="flex-grow-1 mx-3">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ $ratingPercentages[5] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[5] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <span>{{ $ratingCounts[5] ?? 0 }}</span>
                             </div>
-                            <div class="mb-1">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">4</span>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1 mx-3">
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-success" role="progressbar" style="width: {{ $ratingPercentages[4] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[4] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <span>{{ $ratingCounts[4] ?? 0 }}</span>
+                        </div>
+                        <div class="mb-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">4</span>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 </div>
+                                <div class="flex-grow-1 mx-3">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ $ratingPercentages[4] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[4] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <span>{{ $ratingCounts[4] ?? 0 }}</span>
                             </div>
-                            <div class="mb-1">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">3</span>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1 mx-3">
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-info" role="progressbar" style="width: {{ $ratingPercentages[3] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[3] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <span>{{ $ratingCounts[3] ?? 0 }}</span>
+                        </div>
+                        <div class="mb-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">3</span>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 </div>
+                                <div class="flex-grow-1 mx-3">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ $ratingPercentages[3] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[3] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <span>{{ $ratingCounts[3] ?? 0 }}</span>
                             </div>
-                            <div class="mb-1">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">2</span>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1 mx-3">
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $ratingPercentages[2] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[2] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <span>{{ $ratingCounts[2] ?? 0 }}</span>
+                        </div>
+                        <div class="mb-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">2</span>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 </div>
+                                <div class="flex-grow-1 mx-3">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $ratingPercentages[2] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[2] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <span>{{ $ratingCounts[2] ?? 0 }}</span>
                             </div>
-                            <div class="mb-1">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <span class="me-2">1</span>
-                                        <i class="bi bi-star-fill text-warning"></i>
-                                    </div>
-                                    <div class="flex-grow-1 mx-3">
-                                        <div class="progress" style="height: 8px;">
-                                            <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $ratingPercentages[1] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[1] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                        </div>
-                                    </div>
-                                    <span>{{ $ratingCounts[1] ?? 0 }}</span>
+                        </div>
+                        <div class="mb-1">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="d-flex align-items-center">
+                                    <span class="me-2">1</span>
+                                    <i class="bi bi-star-fill text-warning"></i>
                                 </div>
+                                <div class="flex-grow-1 mx-3">
+                                    <div class="progress" style="height: 8px;">
+                                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $ratingPercentages[1] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[1] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                </div>
+                                <span>{{ $ratingCounts[1] ?? 0 }}</span>
                             </div>
                         </div>
                     </div>
@@ -540,6 +540,7 @@
         </div>
     </div>
 </div>
+@endsection
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -626,4 +627,3 @@
     });
 </script>
 @endpush
-@endsection
