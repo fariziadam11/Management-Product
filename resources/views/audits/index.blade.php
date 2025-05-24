@@ -3,15 +3,15 @@
 @section('page_heading', 'Audit Log')
 
 @section('content')
-<div class="w-full">
+<div class="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
     <!-- Filters and Search -->
-    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
-        <div class="px-6 py-4 border-b border-gray-200">
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4 sm:mb-6">
+        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
             <h3 class="text-lg font-semibold text-blue-600">Filter Audit Logs</h3>
         </div>
-        <div class="p-6">
+        <div class="p-4 sm:p-6">
             <form action="{{ route('audits.index') }}" method="GET" class="mb-0">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                     <div>
                         <label for="user_id" class="block text-sm font-medium text-gray-700 mb-1">User</label>
                         <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 select2" id="user_id" name="user_id">
@@ -46,16 +46,16 @@
                     </div>
                     <div>
                         <label for="date_range" class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
-                        <div class="flex items-center space-x-2">
-                            <input type="date" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" id="from_date" name="from_date" value="{{ request('from_date') }}">
-                            <span class="text-gray-500">to</span>
-                            <input type="date" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" id="to_date" name="to_date" value="{{ request('to_date') }}">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                            <input type="date" class="w-full sm:flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 text-sm" id="from_date" name="from_date" value="{{ request('from_date') }}">
+                            <span class="text-gray-500 hidden sm:inline">to</span>
+                            <input type="date" class="w-full sm:flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 text-sm" id="to_date" name="to_date" value="{{ request('to_date') }}">
                         </div>
                     </div>
                     <div class="md:col-span-2 lg:col-span-4">
                         <div class="flex justify-end space-x-3 mt-4">
                             <a href="{{ route('audits.index') }}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors duration-150 ease-in-out">Reset</a>
-                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-150 ease-in-out">Apply Filters</button>
+                            <button type="submit" class="w-full sm:w-auto mt-2 sm:mt-0 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors duration-150 ease-in-out">Apply Filters</button>
                         </div>
                     </div>
                 </div>
@@ -65,24 +65,37 @@
 
     <!-- Audit Logs Table -->
     <x-tailwind.card>
-        <x-tailwind.table :headers="['Event', 'Model', 'User', 'Date', '']">
+        <div class="overflow-x-auto -mx-4 sm:-mx-0">
+            <x-tailwind.table :headers="['Event', 'Model', 'User', 'Date', '']">
             @forelse($audits as $audit)
                 <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
                         @if($audit->event == 'created')
-                            <x-tailwind.badge variant="success" icon="plus-circle" size="sm">
+                            <x-tailwind.badge variant="success" icon="plus-circle" size="xs" class="sm:hidden">
+                                Created
+                            </x-tailwind.badge>
+                            <x-tailwind.badge variant="success" icon="plus-circle" size="sm" class="hidden sm:inline-flex">
                                 Created
                             </x-tailwind.badge>
                         @elseif($audit->event == 'updated')
-                            <x-tailwind.badge variant="info" icon="pencil" size="sm">
+                            <x-tailwind.badge variant="info" icon="pencil" size="xs" class="sm:hidden">
+                                Updated
+                            </x-tailwind.badge>
+                            <x-tailwind.badge variant="info" icon="pencil" size="sm" class="hidden sm:inline-flex">
                                 Updated
                             </x-tailwind.badge>
                         @elseif($audit->event == 'deleted')
-                            <x-tailwind.badge variant="danger" icon="trash" size="sm">
+                            <x-tailwind.badge variant="danger" icon="trash" size="xs" class="sm:hidden">
+                                Deleted
+                            </x-tailwind.badge>
+                            <x-tailwind.badge variant="danger" icon="trash" size="sm" class="hidden sm:inline-flex">
                                 Deleted
                             </x-tailwind.badge>
                         @else
-                            <x-tailwind.badge variant="secondary" size="sm">
+                            <x-tailwind.badge variant="secondary" size="xs" class="sm:hidden">
+                                {{ ucfirst($audit->event) }}
+                            </x-tailwind.badge>
+                            <x-tailwind.badge variant="secondary" size="sm" class="hidden sm:inline-flex">
                                 {{ ucfirst($audit->event) }}
                             </x-tailwind.badge>
                         @endif
@@ -96,12 +109,22 @@
                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {{ $audit->created_at->format('M d, Y H:i:s') }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-right text-xs sm:text-sm font-medium">
+                        <x-tailwind.button
+                            href="{{ route('audits.show', $audit) }}"
+                            variant="outline-primary"
+                            size="xs"
+                            icon="eye"
+                            class="sm:hidden"
+                        >
+                            View
+                        </x-tailwind.button>
                         <x-tailwind.button
                             href="{{ route('audits.show', $audit) }}"
                             variant="outline-primary"
                             size="sm"
                             icon="eye"
+                            class="hidden sm:inline-flex"
                         >
                             View Details
                         </x-tailwind.button>
@@ -109,12 +132,13 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                    <td colspan="5" class="px-3 sm:px-6 py-3 sm:py-4 text-center text-xs sm:text-sm text-gray-500">
                         No audit logs found.
                     </td>
                 </tr>
             @endforelse
-        </x-tailwind.table>
+            </x-tailwind.table>
+        </div>
 
         @if($audits->hasPages())
             <div class="mt-4">
@@ -125,7 +149,7 @@
             </div>
 
             <!-- Pagination -->
-            <div class="mt-6 flex justify-center">
+            <div class="mt-4 sm:mt-6 flex justify-center">
                 <div class="pagination-tailwind">
                     {{ $audits->appends(request()->query())->links() }}
                 </div>
@@ -135,6 +159,13 @@
 </div>
 
 <style>
+    /* Responsive table styles */
+    @media (max-width: 640px) {
+        .pagination-tailwind nav > div > span,
+        .pagination-tailwind nav > div > button {
+            @apply px-2 py-1 text-xs;
+        }
+    }
     /* Custom styles for pre elements */
     pre {
         margin: 0;

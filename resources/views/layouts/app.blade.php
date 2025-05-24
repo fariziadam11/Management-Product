@@ -91,6 +91,9 @@
     <!-- Scripts -->
     @include('components.tailwind.scripts')
 
+    <!-- Alpine.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+
     <!-- Alpine.js initialization for responsive behavior -->
     <script>
         document.addEventListener('alpine:init', () => {

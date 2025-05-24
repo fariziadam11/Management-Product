@@ -4,31 +4,42 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Filters and Search -->
-    <div x-data="{showFilters: true}" class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-medium text-gray-900 flex items-center">
-                <i class="bi bi-funnel mr-2 text-blue-600"></i>
-                <span>Filter Reviews</span>
-            </h3>
-            <button @click="showFilters = !showFilters" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                <i class="bi" :class="showFilters ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+    <!-- Filters Section -->
+    <div x-data="{ showFilters: true }" class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+            <div class="flex items-center space-x-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                </svg>
+                <h3 class="text-lg font-semibold text-gray-800">Filter Reviews</h3>
+            </div>
+            <button @click="showFilters = !showFilters" class="text-gray-500 hover:text-gray-700 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" x-show="!showFilters">
+                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" x-show="showFilters" style="display: none;">
+                    <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
             </button>
         </div>
-        <div x-show="showFilters" x-transition class="px-4 py-4 bg-white">
-            <form action="{{ route('reviews.index') }}" method="GET" class="space-y-4 md:space-y-0">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 items-center">
-                    <div class="lg:col-span-3">
-                        <div class="relative rounded-md shadow-sm">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <i class="bi bi-search text-gray-400"></i>
-                            </div>
-                            <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                id="search" name="search" placeholder="Search reviews..." value="{{ request('search') }}">
+
+        <div x-show="showFilters" x-transition class="px-5 py-4 bg-white">
+            <form action="{{ route('reviews.index') }}" method="GET" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- Search Input -->
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                            </svg>
                         </div>
+                        <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                            id="search" name="search" placeholder="Search reviews..." value="{{ request('search') }}">
                     </div>
-                    <div class="lg:col-span-2">
-                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" name="product_id">
+
+                    <!-- Product Filter -->
+                    <div>
+                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg" name="product_id">
                             <option value="">All Products</option>
                             @foreach($products as $product)
                                 <option value="{{ $product->id }}" {{ request('product_id') == $product->id ? 'selected' : '' }}>
@@ -37,8 +48,10 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="lg:col-span-2">
-                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" name="rating">
+
+                    <!-- Rating Filter -->
+                    <div>
+                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg" name="rating">
                             <option value="">All Ratings</option>
                             <option value="5" {{ request('rating') == '5' ? 'selected' : '' }}>5 Stars</option>
                             <option value="4" {{ request('rating') == '4' ? 'selected' : '' }}>4 Stars</option>
@@ -47,52 +60,149 @@
                             <option value="1" {{ request('rating') == '1' ? 'selected' : '' }}>1 Star</option>
                         </select>
                     </div>
-                    <div class="lg:col-span-2">
-                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" name="status">
+
+                    <!-- Status Filter -->
+                    <div>
+                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg" name="status">
                             <option value="">All Status</option>
                             <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                         </select>
                     </div>
-                    <div class="lg:col-span-2">
-                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" name="sort">
+
+                    <!-- Sort Filter -->
+                    <div>
+                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-lg" name="sort">
                             <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
                             <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest First</option>
                             <option value="rating_high" {{ request('sort') == 'rating_high' ? 'selected' : '' }}>Highest Rating</option>
                             <option value="rating_low" {{ request('sort') == 'rating_low' ? 'selected' : '' }}>Lowest Rating</option>
                         </select>
                     </div>
-                    <div class="lg:col-span-1">
-                        <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                            <i class="bi bi-funnel-fill mr-2"></i>
-                            Filter
+
+                    <!-- Action Buttons -->
+                    <div class="flex space-x-3 items-center">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
+                            </svg>
+                            Apply Filters
                         </button>
+                        <a href="{{ route('reviews.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                            Reset
+                        </a>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <!-- Total Reviews -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Total Reviews</p>
+                    <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $reviews->total() }}</p>
+                </div>
+                <div class="p-3 rounded-lg bg-blue-50 text-blue-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Average Rating -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Average Rating</p>
+                    <p class="mt-1 text-2xl font-semibold text-gray-900">{{ number_format($reviews->avg('rating') ?? 0, 1) }}/5</p>
+                    <div class="flex mt-1">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= round($reviews->avg('rating') ?? 0))
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            @else
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            @endif
+                        @endfor
+                    </div>
+                </div>
+                <div class="p-3 rounded-lg bg-yellow-50 text-yellow-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Approved Reviews -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Approved</p>
+                    <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $reviews->where('status', 'approved')->count() }}</p>
+                    <p class="mt-1 text-xs text-gray-500">{{ $reviews->count() > 0 ? round(($reviews->where('status', 'approved')->count() / $reviews->count()) * 100) : 0 }}% of total</p>
+                </div>
+                <div class="p-3 rounded-lg bg-green-50 text-green-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Reviews -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-medium text-gray-500">Pending</p>
+                    <p class="mt-1 text-2xl font-semibold text-gray-900">{{ $reviews->where('status', 'pending')->count() }}</p>
+                    <p class="mt-1 text-xs text-gray-500">{{ $reviews->count() > 0 ? round(($reviews->where('status', 'pending')->count() / $reviews->count()) * 100) : 0 }}% of total</p>
+                </div>
+                <div class="p-3 rounded-lg bg-orange-50 text-orange-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Reviews List -->
-    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div class="px-4 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
-            <h3 class="text-lg font-medium text-gray-900 flex items-center">
-                <i class="bi bi-star mr-2 text-blue-600"></i>
-                <span>Reviews</span>
-            </h3>
-            <div class="flex space-x-2">
-                <a href="{{ route('export.form', ['type' => 'reviews']) }}" class="inline-flex items-center px-3 py-1.5 border border-blue-600 text-sm font-medium rounded text-blue-600 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                    <i class="bi bi-download mr-1.5"></i> Export
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
+            <div class="flex items-center space-x-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                <h3 class="text-lg font-semibold text-gray-800">Product Reviews</h3>
+            </div>
+            <div class="flex space-x-3">
+                <a href="{{ route('export.form', ['type' => 'reviews']) }}" class="inline-flex items-center px-3 py-1.5 border border-blue-600 text-sm font-medium rounded-lg text-blue-600 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Export
                 </a>
-                <a href="{{ route('import.form', ['type' => 'reviews']) }}" class="inline-flex items-center px-3 py-1.5 border border-green-600 text-sm font-medium rounded text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
-                    <i class="bi bi-upload mr-1.5"></i> Import
+                <a href="{{ route('import.form', ['type' => 'reviews']) }}" class="inline-flex items-center px-3 py-1.5 border border-green-600 text-sm font-medium rounded-lg text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    Import
                 </a>
             </div>
         </div>
 
         @if($reviews->count() > 0)
-            <!-- Desktop view (md and above) -->
+            <!-- Desktop Table -->
             <div class="hidden md:block overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gray-50">
@@ -107,434 +217,414 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                            @foreach($reviews as $review)
-                            <tr class="hover:bg-gray-50">
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        @if($review->product && $review->product->image)
-                                            <img src="{{ asset('storage/' . $review->product->image) }}" alt="{{ $review->product->name }}" class="h-10 w-10 rounded-full object-cover flex-shrink-0">
-                                        @else
-                                            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-content-center flex-shrink-0">
-                                                <i class="bi bi-image text-gray-400"></i>
-                                            </div>
-                                        @endif
-                                        <div class="ml-4">
-                                            <a href="{{ route('products.show', $review->product_id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">
-                                                {{ $review->product ? $review->product->name : 'Unknown Product' }}
-                                            </a>
+                        @foreach($reviews as $review)
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <!-- Product Column -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    @if($review->product && $review->product->image)
+                                        <img src="{{ asset('storage/' . $review->product->image) }}" alt="{{ $review->product->name }}" class="h-10 w-10 rounded-lg object-cover flex-shrink-0">
+                                    @else
+                                        <div class="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                            </svg>
                                         </div>
+                                    @endif
+                                    <div class="ml-4">
+                                        <a href="{{ route('products.show', $review->product_id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                                            {{ $review->product ? $review->product->name : 'Unknown Product' }}
+                                        </a>
                                     </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex">
+                                </div>
+                            </td>
+
+                            <!-- Rating Column -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex mr-2">
                                         @for($i = 1; $i <= 5; $i++)
                                             @if($i <= $review->rating)
-                                                <i class="bi bi-star-fill text-yellow-400"></i>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
                                             @else
-                                                <i class="bi bi-star text-gray-300"></i>
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
                                             @endif
                                         @endfor
                                     </div>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="max-w-xs">
-                                        <div x-data="{ open: false }" class="space-y-1">
-                                            <div class="text-sm font-medium text-gray-900">{{ $review->title }}</div>
-                                            <p class="text-sm text-gray-500 truncate">{{ $review->content }}</p>
-                                            <button @click="open = !open" class="text-xs text-blue-600 hover:text-blue-800 focus:outline-none">
-                                                {{ __('Read more') }}
-                                            </button>
-                                            <div x-show="open" x-transition class="mt-2 p-3 bg-gray-50 rounded-md text-sm text-gray-700 border border-gray-200">
-                                                {{ $review->content }}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    <div class="flex items-center">
-                                        <img class="h-6 w-6 rounded-full mr-2" src="https://ui-avatars.com/api/?name={{ urlencode($review->reviewer_name) }}&background=4e73df&color=ffffff&size=24" alt="{{ $review->reviewer_name }}">
-                                        <div>
-                                            <div class="text-sm font-medium text-gray-900">{{ $review->reviewer_name }}</div>
-                                            @if($review->reviewer_email)
-                                                <div class="text-xs text-gray-500">{{ $review->reviewer_email }}</div>
-                                            @endif
-                                        </div>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap">
-                                    @if($review->status == 'approved')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                            Approved
-                                        </span>
-                                    @elseif($review->status == 'pending')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                            Pending
-                                        </span>
-                                    @elseif($review->status == 'rejected')
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                            Rejected
-                                        </span>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    {{ $review->created_at->format('M d, Y') }}
-                                </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex justify-end space-x-2">
-                                        <a href="{{ route('reviews.show', $review) }}" class="inline-flex items-center px-2 py-1 border border-blue-600 text-xs font-medium rounded text-blue-600 hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                            <i class="bi bi-eye mr-1"></i>
-                                        </a>
-                                        <a href="{{ route('reviews.edit', $review) }}" class="inline-flex items-center px-2 py-1 border border-yellow-600 text-xs font-medium rounded text-yellow-600 hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
-                                            <i class="bi bi-pencil mr-1"></i>
-                                        </a>
-                                        <button type="button"
-                                                @click="$dispatch('open-modal', 'delete-modal-{{ $review->id }}')"
-                                                class="inline-flex items-center px-2 py-1 border border-red-600 text-xs font-medium rounded text-red-600 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
-                                            <i class="bi bi-trash mr-1"></i>
-                                        </button>
-                                    </div>
-
-                                    <!-- Delete Modal with Alpine.js -->
-                                    <div
-                                        x-data="{ open: false }"
-                                        @open-modal.window="if ($event.detail === 'delete-modal-{{ $review->id }}') open = true"
-                                        @keydown.escape.window="open = false"
-                                        x-show="open"
-                                        class="fixed inset-0 z-50 overflow-y-auto"
-                                        x-transition:enter="transition ease-out duration-300"
-                                        x-transition:enter-start="opacity-0"
-                                        x-transition:enter-end="opacity-100"
-                                        x-transition:leave="transition ease-in duration-200"
-                                        x-transition:leave-start="opacity-100"
-                                        x-transition:leave-end="opacity-0"
-                                        style="display: none;"
-                                    >
-                                        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                                            <div
-                                                x-show="open"
-                                                x-transition:enter="ease-out duration-300"
-                                                x-transition:enter-start="opacity-0"
-                                                x-transition:enter-end="opacity-100"
-                                                x-transition:leave="ease-in duration-200"
-                                                x-transition:leave-start="opacity-100"
-                                                x-transition:leave-end="opacity-0"
-                                                @click="open = false"
-                                                class="fixed inset-0 transition-opacity"
-                                                aria-hidden="true"
-                                            >
-                                                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-                                            </div>
-
-                                            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-
-                                            <div
-                                                x-show="open"
-                                                x-transition:enter="ease-out duration-300"
-                                                x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                                                x-transition:leave="ease-in duration-200"
-                                                x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
-                                                x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                @click.away="open = false"
-                                                class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                                                role="dialog"
-                                                aria-modal="true"
-                                                aria-labelledby="modal-headline"
-                                            >
-                                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                                    <div class="sm:flex sm:items-start">
-                                                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                                            <i class="bi bi-exclamation-triangle text-red-600"></i>
-                                                        </div>
-                                                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                                                            <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
-                                                                Confirm Delete
-                                                            </h3>
-                                                            <div class="mt-2">
-                                                                <p class="text-sm text-gray-500">
-                                                                    Are you sure you want to delete this review? This action cannot be undone.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                                    <form action="{{ route('reviews.destroy', $review) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                                            Delete
-                                                        </button>
-                                                    </form>
-                                                    <button @click="open = false" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                                                        Cancel
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Mobile view (sm and below) -->
-                <div class="block md:hidden">
-                    <div class="divide-y divide-gray-200">
-                        @foreach($reviews as $review)
-                            <div class="p-4 hover:bg-gray-50">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center">
-                                        @if($review->product && $review->product->image)
-                                            <img src="{{ asset('storage/' . $review->product->image) }}" alt="{{ $review->product->name }}" class="h-10 w-10 rounded-full object-cover flex-shrink-0">
-                                        @else
-                                            <div class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-content-center flex-shrink-0">
-                                                <i class="bi bi-image text-gray-400"></i>
-                                            </div>
-                                        @endif
-                                        <div class="ml-3">
-                                            <a href="{{ route('products.show', $review->product_id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800">
-                                                {{ $review->product ? $review->product->name : 'Unknown Product' }}
-                                            </a>
-                                            <div class="flex mt-1">
-                                                @for($i = 1; $i <= 5; $i++)
-                                                    @if($i <= $review->rating)
-                                                        <i class="bi bi-star-fill text-yellow-400 text-xs"></i>
-                                                    @else
-                                                        <i class="bi bi-star text-gray-300 text-xs"></i>
-                                                    @endif
-                                                @endfor
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div x-data="{ open: false }" class="relative">
-                                        <button @click="open = !open" class="text-gray-500 hover:text-gray-700 focus:outline-none p-1 rounded-full hover:bg-gray-100">
-                                            <i class="bi bi-three-dots-vertical"></i>
-                                        </button>
-                                        <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                                            <a href="{{ route('reviews.show', $review) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                                <i class="bi bi-eye text-blue-600 mr-2"></i> View
-                                            </a>
-                                            <a href="{{ route('reviews.edit', $review) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                                                <i class="bi bi-pencil text-yellow-600 mr-2"></i> Edit
-                                            </a>
-                                            <div class="border-t border-gray-100 my-1"></div>
-                                            <button @click="$dispatch('open-modal', 'delete-modal-{{ $review->id }}'); open = false" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center">
-                                                <i class="bi bi-trash mr-2"></i> Delete
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <span class="text-sm text-gray-500">{{ $review->rating }}/5</span>
                                 </div>
-                                <div class="mb-3">
+                            </td>
+
+                            <!-- Review Content Column -->
+                            <td class="px-6 py-4">
+                                <div x-data="{ open: false }" class="max-w-xs">
                                     <div class="text-sm font-medium text-gray-900">{{ $review->title }}</div>
-                                    <div x-data="{ expanded: false }" class="mt-1">
-                                        <p class="text-sm text-gray-500" :class="{ 'line-clamp-2': !expanded }">
-                                            {{ $review->content }}
-                                        </p>
-                                        <button @click="expanded = !expanded" class="text-xs text-blue-600 hover:text-blue-800 focus:outline-none mt-1">
-                                            {{ __('Read ') }} <span x-text="expanded ? 'less' : 'more'"></span>
-                                        </button>
+                                    <p class="text-sm text-gray-500 truncate">{{ $review->content }}</p>
+                                    <button @click="open = !open" class="text-xs text-blue-600 hover:text-blue-800 focus:outline-none transition-colors mt-1">
+                                        {{ __('Read more') }}
+                                    </button>
+                                    <div x-show="open" x-transition class="mt-2 p-3 bg-gray-50 rounded-lg text-sm text-gray-700 border border-gray-200">
+                                        {{ $review->content }}
                                     </div>
                                 </div>
-                                <div class="grid grid-cols-2 gap-2 text-xs mt-3">
+                            </td>
+
+                            <!-- Reviewer Column -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <img class="h-8 w-8 rounded-full mr-2" src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&background=4e73df&color=ffffff&size=32" alt="{{ auth()->user()->name }}">
                                     <div>
-                                        <span class="text-gray-500">Reviewer:</span>
-                                        <span class="font-medium text-gray-900">{{ $review->reviewer_name }}</span>
-                                    </div>
-                                    <div>
-                                        <span class="text-gray-500">Status:</span>
-                                        @if($review->status == 'approved')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Approved</span>
-                                        @elseif($review->status == 'pending')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending</span>
-                                        @elseif($review->status == 'rejected')
-                                            <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Rejected</span>
+                                        <div class="text-sm font-medium text-gray-900">{{ auth()->user()->name }}</div>
+                                        @if(auth()->user()->email)
+                                            <div class="text-xs text-gray-500">{{ auth()->user()->email }}</div>
                                         @endif
                                     </div>
-                                    <div class="col-span-2">
-                                        <span class="text-gray-500">Date:</span>
-                                        <span class="font-medium text-gray-900">{{ $review->created_at->format('M d, Y') }}</span>
+                                </div>
+                            </td>
+
+                            <!-- Status Column -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                @if($review->status == 'approved')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Approved
+                                    </span>
+                                @elseif($review->status == 'pending')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        Pending
+                                    </span>
+                                @elseif($review->status == 'rejected')
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                        Rejected
+                                    </span>
+                                @endif
+                            </td>
+
+                            <!-- Date Column -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ $review->created_at->format('M d, Y') }}
+                            </td>
+
+                            <!-- Actions Column -->
+                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                <div class="flex justify-end space-x-2">
+                                    <a href="{{ route('reviews.show', $review) }}" class="inline-flex items-center p-1.5 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors" title="View">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg>
+                                    </a>
+                                    <a href="{{ route('reviews.edit', $review) }}" class="inline-flex items-center p-1.5 border border-gray-300 rounded-lg text-yellow-600 bg-white hover:bg-yellow-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-colors" title="Edit">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                    </a>
+                                    <form action="{{ route('reviews.destroy', $review) }}" method="POST" class="w-full">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" onclick="return confirm('Are you sure you want to delete this review?')" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                            </svg>
+                                            Delete
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Delete Modal -->
+                        <div
+                            x-data="{ open: false }"
+                            @open-modal.window="if ($event.detail === 'delete-modal-{{ $review->id }}') open = true"
+                            @keydown.escape.window="open = false"
+                            x-show="open"
+                            class="fixed inset-0 z-50 overflow-y-auto"
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            style="display: none;"
+                        >
+                            <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <div
+                                    x-show="open"
+                                    x-transition:enter="ease-out duration-300"
+                                    x-transition:enter-start="opacity-0"
+                                    x-transition:enter-end="opacity-100"
+                                    x-transition:leave="ease-in duration-200"
+                                    x-transition:leave-start="opacity-100"
+                                    x-transition:leave-end="opacity-0"
+                                    @click="open = false"
+                                    class="fixed inset-0 transition-opacity"
+                                    aria-hidden="true"
+                                >
+                                    <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+                                </div>
+
+                                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                                <div
+                                    x-show="open"
+                                    x-transition:enter="ease-out duration-300"
+                                    x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                    x-transition:leave="ease-in duration-200"
+                                    x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
+                                    x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    @click.away="open = false"
+                                    class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                                    role="dialog"
+                                    aria-modal="true"
+                                    aria-labelledby="modal-headline"
+                                >
+                                    <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                        <div class="sm:flex sm:items-start">
+                                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                </svg>
+                                            </div>
+                                            <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                                                <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-headline">
+                                                    Delete Review
+                                                </h3>
+                                                <div class="mt-2">
+                                                    <p class="text-sm text-gray-500">
+                                                        Are you sure you want to delete this review? This action cannot be undone.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                        <form id="delete-form-{{ $review->id }}" action="{{ route('reviews.destroy', $review) }}" method="POST" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
+                                        <button type="button"
+                                                onclick="event.preventDefault(); document.getElementById('delete-form-{{ $review->id }}').submit();"
+                                                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                            Delete
+                                        </button>
+                                        <button @click="open = false" type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                            Cancel
+                                        </button>
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-                </div>
-
-                <!-- Pagination -->
-                <div class="px-4 py-5 border-t border-gray-200">
-                    {{ $reviews->appends(request()->query())->links('components.tailwind.pagination') }}
-                </div>
-            @else
-                <div class="p-8 text-center">
-                    <div class="flex flex-col items-center">
-                        <div class="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
-                            <i class="bi bi-star text-3xl text-blue-600"></i>
                         </div>
-                        <h3 class="text-lg font-medium text-gray-900 mb-1">No reviews found</h3>
-                        <p class="text-sm text-gray-500 mb-6 max-w-md">There are no reviews matching your criteria. Try adjusting your filters or check back later.</p>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Mobile List -->
+            <div class="block md:hidden divide-y divide-gray-200">
+                @foreach($reviews as $review)
+                <div class="p-4 hover:bg-gray-50 transition-colors">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center space-x-3">
+                            @if($review->product && $review->product->image)
+                                <img src="{{ asset('storage/' . $review->product->image) }}" alt="{{ $review->product->name }}" class="h-10 w-10 rounded-lg object-cover">
+                            @else
+                                <div class="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                            @endif
+                            <div>
+                                <a href="{{ route('products.show', $review->product_id) }}" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+                                    {{ $review->product ? $review->product->name : 'Unknown Product' }}
+                                </a>
+                                <div class="flex items-center mt-1">
+                                    <div class="flex mr-1">
+                                        @for($i = 1; $i <= 5; $i++)
+                                            @if($i <= $review->rating)
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            @else
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                </svg>
+                                            @endif
+                                        @endfor
+                                    </div>
+                                    <span class="text-xs text-gray-500">{{ $review->rating }}/5</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div x-data="{ open: false }" class="relative">
+                            <button @click="open = !open" class="text-gray-500 hover:text-gray-700 focus:outline-none p-1 rounded-full hover:bg-gray-100 transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                </svg>
+                            </button>
+                            <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-50 border border-gray-200">
+                                <a href="{{ route('reviews.show', $review) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                    </svg>
+                                    View
+                                </a>
+                                <a href="{{ route('reviews.edit', $review) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                    </svg>
+                                    Edit
+                                </a>
+                                <div class="border-t border-gray-100 my-1"></div>
+                                <button @click="$dispatch('open-modal', 'delete-modal-{{ $review->id }}'); open = false" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Content -->
+                    <div class="mb-3">
+                        <div class="text-sm font-medium text-gray-900">{{ $review->title }}</div>
+                        <div x-data="{ expanded: false }" class="mt-1">
+                            <p class="text-sm text-gray-500" :class="{ 'line-clamp-2': !expanded }">
+                                {{ $review->content }}
+                            </p>
+                            <button @click="expanded = !expanded" class="text-xs text-blue-600 hover:text-blue-800 focus:outline-none mt-1 transition-colors">
+                                {{ __('Read ') }} <span x-text="expanded ? 'less' : 'more'"></span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Meta Info -->
+                    <div class="grid grid-cols-2 gap-2 text-xs mt-3">
+                        <div class="flex items-center">
+                            <span class="text-gray-500 mr-1">Reviewer:</span>
+                            <span class="font-medium text-gray-900">{{ $review->reviewer_name }}</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="text-gray-500 mr-1">Status:</span>
+                            @if($review->status == 'approved')
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Approved</span>
+                            @elseif($review->status == 'pending')
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Pending</span>
+                            @elseif($review->status == 'rejected')
+                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Rejected</span>
+                            @endif
+                        </div>
+                        <div class="col-span-2 flex items-center">
+                            <span class="text-gray-500 mr-1">Date:</span>
+                            <span class="font-medium text-gray-900">{{ $review->created_at->format('M d, Y') }}</span>
+                        </div>
                     </div>
                 </div>
-            @endif
-        </div>
+                @endforeach
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-5 py-4 border-t border-gray-100">
+                {{ $reviews->appends(request()->query())->links('components.tailwind.pagination') }}
+            </div>
+        @else
+            <!-- Empty State -->
+            <div class="p-8 text-center">
+                <div class="flex flex-col items-center justify-center">
+                    <div class="h-16 w-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-lg font-medium text-gray-900 mb-1">No reviews found</h3>
+                    <p class="text-sm text-gray-500 mb-6 max-w-md">There are no reviews matching your criteria. Try adjusting your filters or check back later.</p>
+                    <a href="{{ route('reviews.index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                        Reset Filters
+                    </a>
+                </div>
+            </div>
+        @endif
     </div>
 </div>
 @endsection
 
 @section('chart_content')
 <!-- Review Statistics -->
-<div class="row">
-    <div class="col-xl-8 col-lg-7">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Review Distribution</h6>
-            </div>
-            <div class="card-body">
-                <div class="chart-area">
-                    <canvas id="reviewDistributionChart"></canvas>
-                </div>
+<div class="space-y-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-800">Review Distribution</h3>
+        </div>
+        <div class="p-5">
+            <div class="chart-area h-64">
+                <canvas id="reviewDistributionChart"></canvas>
             </div>
         </div>
     </div>
-    <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-            <div class="card-header py-3">
-                <h6 class="m-0 font-weight-bold text-primary">Rating Summary</h6>
-            </div>
-            <div class="card-body">
-                <div class="row align-items-center mb-4">
-                    <div class="col-md-4 text-center">
-                        @php
-                            $averageRating = $reviews->avg('rating') ?? 0;
-                            $averageRating = round($averageRating * 2) / 2; // Round to nearest 0.5
 
-                            // Calculate rating counts
-                            $ratingCounts = [
-                                5 => $reviews->where('rating', 5)->count(),
-                                4 => $reviews->where('rating', 4)->count(),
-                                3 => $reviews->where('rating', 3)->count(),
-                                2 => $reviews->where('rating', 2)->count(),
-                                1 => $reviews->where('rating', 1)->count(),
-                            ];
-
-                            // Calculate rating percentages
-                            $ratingPercentages = [];
-                            $totalReviews = $reviews->count();
-                            if ($totalReviews > 0) {
-                                foreach ($ratingCounts as $rating => $count) {
-                                    $ratingPercentages[$rating] = ($count / $totalReviews) * 100;
-                                }
-                            }
-
-                            // Prepare chart data
-                            $reviewChartData = [
-                                'labels' => [],
-                                'data' => []
-                            ];
-
-                            // Get the last 7 days for the chart
-                            for ($i = 6; $i >= 0; $i--) {
-                                $date = now()->subDays($i)->format('M d');
-                                $reviewChartData['labels'][] = $date;
-
-                                // Count reviews for this date
-                                $dayCount = $reviews->filter(function($review) use ($i) {
-                                    $dateToCheck = now()->subDays($i)->startOfDay();
-                                    return $review->created_at->startOfDay()->equalTo($dateToCheck);
-                                })->count();
-
-                                $reviewChartData['data'][] = $dayCount;
-                            }
-                        @endphp
-                        <div class="display-4 fw-bold text-primary">{{ number_format($averageRating, 1) }}</div>
-                        <div class="d-flex justify-content-center">
-                            @for($i = 1; $i <= 5; $i++)
-                                @if($i <= round($averageRating))
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                @else
-                                    <i class="bi bi-star text-muted"></i>
-                                @endif
-                            @endfor
-                        </div>
-                        @php
-                            $totalReviews = $reviews->total() ?? count($reviews);
-                        @endphp
-                        <div class="text-muted mt-1">{{ $totalReviews }} reviews</div>
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-5 py-4 border-b border-gray-100">
+            <h3 class="text-lg font-semibold text-gray-800">Rating Summary</h3>
+        </div>
+        <div class="p-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Average Rating -->
+                <div class="flex flex-col items-center justify-center p-6 border border-gray-200 rounded-lg">
+                    <div class="text-4xl font-bold text-gray-900 mb-2">{{ number_format($reviews->avg('rating') ?? 0, 1) }}</div>
+                    <div class="flex mb-3">
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= round($reviews->avg('rating') ?? 0))
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            @else
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            @endif
+                        @endfor
                     </div>
-                    <div class="col-md-8">
-                        <div class="mb-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">5</span>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1 mx-3">
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ $ratingPercentages[5] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[5] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <span>{{ $ratingCounts[5] ?? 0 }}</span>
+                    <div class="text-sm text-gray-500">Based on {{ $reviews->total() }} reviews</div>
+                </div>
+
+                <!-- Rating Breakdown -->
+                <div class="space-y-3">
+                    @foreach([5, 4, 3, 2, 1] as $rating)
+                    <div class="flex items-center">
+                        <div class="w-8 text-right mr-2">
+                            <span class="text-sm font-medium text-gray-900">{{ $rating }}</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block ml-1 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                        </div>
+                        <div class="flex-1 mx-2">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                @php
+                                    $percentage = $reviews->count() > 0 ? ($reviews->where('rating', $rating)->count() / $reviews->count()) * 100 : 0;
+                                    $colorClass = [
+                                        5 => 'bg-green-500',
+                                        4 => 'bg-blue-500',
+                                        3 => 'bg-yellow-500',
+                                        2 => 'bg-orange-500',
+                                        1 => 'bg-red-500',
+                                    ][$rating];
+                                @endphp
+                                <div class="h-2.5 rounded-full {{ $colorClass }}" style="width: {{ $percentage }}%"></div>
                             </div>
                         </div>
-                        <div class="mb-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">4</span>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1 mx-3">
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ $ratingPercentages[4] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[4] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <span>{{ $ratingCounts[4] ?? 0 }}</span>
-                            </div>
-                        </div>
-                        <div class="mb-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">3</span>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1 mx-3">
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-info" role="progressbar" style="width: {{ $ratingPercentages[3] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[3] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <span>{{ $ratingCounts[3] ?? 0 }}</span>
-                            </div>
-                        </div>
-                        <div class="mb-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">2</span>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1 mx-3">
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-warning" role="progressbar" style="width: {{ $ratingPercentages[2] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[2] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <span>{{ $ratingCounts[2] ?? 0 }}</span>
-                            </div>
-                        </div>
-                        <div class="mb-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="d-flex align-items-center">
-                                    <span class="me-2">1</span>
-                                    <i class="bi bi-star-fill text-warning"></i>
-                                </div>
-                                <div class="flex-grow-1 mx-3">
-                                    <div class="progress" style="height: 8px;">
-                                        <div class="progress-bar bg-danger" role="progressbar" style="width: {{ $ratingPercentages[1] ?? 0 }}%" aria-valuenow="{{ $ratingPercentages[1] ?? 0 }}" aria-valuemin="0" aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                                <span>{{ $ratingCounts[1] ?? 0 }}</span>
-                            </div>
+                        <div class="w-12 text-left">
+                            <span class="text-sm font-medium text-gray-900">{{ $reviews->where('rating', $rating)->count() }}</span>
+                            <span class="text-xs text-gray-500 ml-1">({{ round($percentage) }}%)</span>
                         </div>
                     </div>
+                    @endforeach
                 </div>
             </div>
         </div>
@@ -543,42 +633,126 @@
 @endsection
 
 @push('scripts')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+    // Wait for everything to be loaded
     document.addEventListener('DOMContentLoaded', function() {
-        // Review Distribution Chart
-        var ctx = document.getElementById('reviewDistributionChart').getContext('2d');
-        var reviewChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: {!! json_encode($reviewChartData['labels']) !!},
-                datasets: [
-                    {
-                        label: 'Reviews',
-                        data: {!! json_encode($reviewChartData['data']) !!},
-                        backgroundColor: 'rgba(78, 115, 223, 0.05)',
-                        borderColor: 'rgba(78, 115, 223, 1)',
-                        pointRadius: 3,
-                        pointBackgroundColor: 'rgba(78, 115, 223, 1)',
-                        pointBorderColor: 'rgba(78, 115, 223, 1)',
-                        pointHoverRadius: 5,
-                        pointHoverBackgroundColor: 'rgba(78, 115, 223, 1)',
-                        pointHoverBorderColor: 'rgba(78, 115, 223, 1)',
-                        pointHitRadius: 10,
-                        pointBorderWidth: 2,
-                        tension: 0.3,
-                        fill: true
+        // Initialize Select2 after DOM is loaded
+        if (window.jQuery && jQuery.fn.select2) {
+            jQuery(document).ready(function($) {
+                $('.select2').select2({
+                    theme: 'classic',
+                    width: '100%',
+                    dropdownParent: $('body')
+                });
+            });
+        } else {
+            console.warn('jQuery or Select2 not loaded. Some features may not work.');
+        }
+
+        // Initialize charts only if elements exist
+        var reviewChartEl = document.getElementById('reviewDistributionChart');
+        if (reviewChartEl) {
+            try {
+                var ctx = reviewChartEl.getContext('2d');
+                if (ctx && typeof Chart !== 'undefined') {
+                    new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: {!! json_encode($reviewChartData['labels'] ?? []) !!},
+                            datasets: [
+                                {
+                                    label: 'Reviews',
+                                    data: {!! json_encode($reviewChartData['data'] ?? []) !!},
+                                    backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                                    borderColor: 'rgba(59, 130, 246, 1)',
+                                    pointRadius: 4,
+                                    pointBackgroundColor: 'rgba(59, 130, 246, 1)',
+                                    pointBorderColor: '#fff',
+                                    pointHoverRadius: 6,
+                                    pointHoverBackgroundColor: 'rgba(59, 130, 246, 1)',
+                                    pointHoverBorderColor: '#fff',
+                                    pointHitRadius: 10,
+                                    pointBorderWidth: 2,
+                                    tension: 0.3,
+                                    fill: true
+                                }
+                            ]
+                        },
+                        options: {
+                            maintainAspectRatio: false,
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: "rgb(255,255,255)",
+                                    bodyColor: "#6B7280",
+                                    titleMarginBottom: 10,
+                                    titleColor: '#374151',
+                                    titleFontSize: 14,
+                                    borderColor: '#E5E7EB',
+                                    borderWidth: 1,
+                                    padding: 12,
+                                    displayColors: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.parsed.y + ' reviews';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    grid: {
+                                        display: false,
+                                        drawBorder: false
+                                    },
+                                    ticks: {
+                                        color: '#6B7280'
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        color: '#6B7280',
+                                        precision: 0
+                                    },
+                                    grid: {
+                                        color: "#F3F4F6",
+                                        drawBorder: false,
+                                        borderDash: [2],
+                                        zeroLineBorderDash: [2]
+                                    }
+                                }
                     }
                 ]
             },
             options: {
                 maintainAspectRatio: false,
-                layout: {
-                    padding: {
-                        left: 10,
-                        right: 25,
-                        top: 25,
-                        bottom: 0
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        backgroundColor: "rgb(255,255,255)",
+                        bodyColor: "#6B7280",
+                        titleMarginBottom: 10,
+                        titleColor: '#374151',
+                        titleFontSize: 14,
+                        borderColor: '#E5E7EB',
+                        borderWidth: 1,
+                        padding: 12,
+                        displayColors: false,
+                        callbacks: {
+                            label: function(context) {
+                                return context.parsed.y + ' reviews';
+                            }
+                        }
                     }
                 },
                 scales: {
@@ -588,38 +762,21 @@
                             drawBorder: false
                         },
                         ticks: {
-                            maxTicksLimit: 7
+                            color: '#6B7280'
                         }
                     },
                     y: {
+                        beginAtZero: true,
                         ticks: {
-                            maxTicksLimit: 5,
-                            padding: 10,
-                            beginAtZero: true,
+                            color: '#6B7280',
                             precision: 0
                         },
                         grid: {
-                            color: "rgb(234, 236, 244)",
+                            color: "#F3F4F6",
                             drawBorder: false,
                             borderDash: [2],
                             zeroLineBorderDash: [2]
                         }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        backgroundColor: "rgb(255,255,255)",
-                        bodyColor: "#858796",
-                        titleMarginBottom: 10,
-                        titleColor: '#6e707e',
-                        titleFontSize: 14,
-                        borderColor: '#dddfeb',
-                        borderWidth: 1,
-                        padding: 15,
-                        displayColors: false
                     }
                 }
             }

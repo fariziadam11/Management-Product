@@ -3,148 +3,198 @@
 @section('page_heading', 'Edit Category')
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-8 col-md-10 mx-auto">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">Edit Category: {{ $category->name }}</h6>
-                    <span class="badge {{ $category->is_active ? 'bg-success' : 'bg-danger' }}">
+<div class="min-h-screen bg-gray-50 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+        <div class="space-y-6">
+            <!-- Edit Category Card -->
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50 flex justify-between items-center">
+                    <h3 class="text-lg font-medium text-gray-900">Edit Category: {{ $category->name }}</h3>
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $category->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                         {{ $category->is_active ? 'Active' : 'Inactive' }}
                     </span>
                 </div>
-                <div class="card-body">
+                <div class="px-6 py-4">
                     <form action="{{ route('categories.update', $category) }}" method="POST">
                         @csrf
                         @method('PUT')
 
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Category Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $category->name) }}" required>
+                        <div class="mb-6">
+                            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                                Category Name <span class="text-red-500">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value="{{ old('name', $category->name) }}"
+                                required
+                                class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('name') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror"
+                            >
                             @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label for="description" class="form-label">Description</label>
-                            <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3">{{ old('description', $category->description) }}</textarea>
+                        <div class="mb-6">
+                            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                                Description
+                            </label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                rows="3"
+                                class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('description') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror"
+                            >{{ old('description', $category->description) }}</textarea>
                             @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="mb-3 form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $category->is_active) ? 'checked' : '' }}>
-                            <label class="form-check-label" for="is_active">Active</label>
-                            <div class="form-text">Inactive categories won't appear in product dropdowns</div>
+                        <div class="mb-6 flex items-center">
+                            <div class="flex items-center h-5">
+                                <input
+                                    id="is_active"
+                                    name="is_active"
+                                    type="checkbox"
+                                    value="1"
+                                    {{ old('is_active', $category->is_active) ? 'checked' : '' }}
+                                    class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded"
+                                >
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="is_active" class="font-medium text-gray-700">Active</label>
+                                <p class="text-gray-500">Inactive categories won't appear in product dropdowns</p>
+                            </div>
                         </div>
 
-                        <div class="mb-3">
-                            <label for="metadata" class="form-label">Metadata (JSON)</label>
-                            <textarea class="form-control @error('metadata') is-invalid @enderror" id="metadata" name="metadata" rows="3">{{ old('metadata', json_encode($category->metadata ?? new stdClass(), JSON_PRETTY_PRINT)) }}</textarea>
+                        <div class="mb-6">
+                            <label for="metadata" class="block text-sm font-medium text-gray-700 mb-1">
+                                Metadata (JSON)
+                            </label>
+                            <textarea
+                                id="metadata"
+                                name="metadata"
+                                rows="3"
+                                class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm font-mono text-sm @error('metadata') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror"
+                            >{{ old('metadata', json_encode($category->metadata ?? new stdClass(), JSON_PRETTY_PRINT)) }}</textarea>
                             @error('metadata')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label for="published_at" class="form-label">Publish Date</label>
-                            <input type="datetime-local" class="form-control @error('published_at') is-invalid @enderror" id="published_at" name="published_at"
-                                value="{{ old('published_at', $category->published_at ? $category->published_at->format('Y-m-d\TH:i') : '') }}">
+                        <div class="mb-6">
+                            <label for="published_at" class="block text-sm font-medium text-gray-700 mb-1">
+                                Publish Date
+                            </label>
+                            <input
+                                type="datetime-local"
+                                id="published_at"
+                                name="published_at"
+                                value="{{ old('published_at', $category->published_at ? $category->published_at->format('Y-m-d\TH:i') : '') }}"
+                                class="w-full px-3 py-2 border rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm @error('published_at') border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 @enderror"
+                            >
                             @error('published_at')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
-                            <div class="form-text">Leave empty to save as draft</div>
+                            <p class="mt-1 text-sm text-gray-500">Leave empty to save as draft</p>
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ route('categories.index') }}" class="btn btn-secondary">Cancel</a>
-                            <button type="submit" class="btn btn-primary">Update Category</button>
+                        <div class="flex justify-between items-center mt-8 pb-4">
+                            <a href="{{ route('categories.index') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Cancel
+                            </a>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                Update Category
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
 
             <!-- Category Usage Information -->
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Category Usage Information</h6>
+            <div class="bg-white shadow rounded-lg overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                    <h3 class="text-lg font-medium text-gray-900">Category Usage Information</h3>
                 </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Created</label>
-                                <p>{{ $category->created_at->format('F d, Y \a\t h:i A') }}</p>
-                            </div>
+                <div class="px-6 py-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Created</label>
+                            <p class="mt-1 text-sm text-gray-900">{{ $category->created_at->format('F d, Y \a\t h:i A') }}</p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Last Updated</label>
-                                <p>{{ $category->updated_at->format('F d, Y \a\t h:i A') }}</p>
-                            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Last Updated</label>
+                            <p class="mt-1 text-sm text-gray-900">{{ $category->updated_at->format('F d, Y \a\t h:i A') }}</p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Products in this Category</label>
-                                <p>{{ $category->products()->count() }}</p>
-                            </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Products in this Category</label>
+                            <p class="mt-1 text-sm text-gray-900">{{ $category->products()->count() }}</p>
                         </div>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">Status</label>
-                                <p>
-                                    <span class="badge {{ $category->is_active ? 'bg-success' : 'bg-danger' }}">
-                                        {{ $category->is_active ? 'Active' : 'Inactive' }}
-                                    </span>
-                                    <span class="ms-2 badge {{ $category->published_at ? 'bg-info' : 'bg-warning' }}">
-                                        {{ $category->published_at ? 'Published' : 'Draft' }}
-                                    </span>
-                                </p>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <div class="mt-1 flex space-x-2">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $category->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                    {{ $category->is_active ? 'Active' : 'Inactive' }}
+                                </span>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $category->published_at ? 'bg-blue-100 text-blue-800' : 'bg-yellow-100 text-yellow-800' }}">
+                                    {{ $category->published_at ? 'Published' : 'Draft' }}
+                                </span>
                             </div>
                         </div>
                     </div>
 
                     @if($category->products()->count() > 0)
-                    <div class="mt-3">
-                        <h6 class="fw-bold">Recent Products in this Category</h6>
-                        <div class="table-responsive">
-                            <table class="table table-sm table-bordered">
-                                <thead>
+                    <div class="mt-6">
+                        <h4 class="text-sm font-medium text-gray-900 mb-3">Recent Products in this Category</h4>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Price</th>
-                                        <th>Stock</th>
-                                        <th>Created</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Stock</th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach($category->products()->latest()->limit(5)->get() as $product)
                                     <tr>
-                                        <td>
-                                            <a href="{{ route('products.edit', $product) }}">
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                            <a href="{{ route('products.edit', $product) }}" class="text-indigo-600 hover:text-indigo-900">
                                                 {{ $product->name }}
                                             </a>
                                         </td>
-                                        <td>${{ number_format($product->price, 2) }}</td>
-                                        <td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            ${{ number_format($product->price, 2) }}
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             @if($product->stock > 10)
-                                                <span class="badge bg-success">{{ $product->stock }} in stock</span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    {{ $product->stock }} in stock
+                                                </span>
                                             @elseif($product->stock > 0)
-                                                <span class="badge bg-warning">{{ $product->stock }} left</span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    {{ $product->stock }} left
+                                                </span>
                                             @else
-                                                <span class="badge bg-danger">Out of stock</span>
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                    Out of stock
+                                                </span>
                                             @endif
                                         </td>
-                                        <td>{{ $product->created_at->format('M d, Y') }}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {{ $product->created_at->format('M d, Y') }}
+                                        </td>
                                     </tr>
                                     @endforeach
 
                                     @if($category->products()->count() > 5)
                                     <tr>
-                                        <td colspan="4" class="text-center">
-                                            <a href="{{ route('products.index', ['category_id' => $category->id]) }}">View all {{ $category->products()->count() }} products</a>
+                                        <td colspan="4" class="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
+                                            <a href="{{ route('products.index', ['category_id' => $category->id]) }}" class="text-indigo-600 hover:text-indigo-900">
+                                                View all {{ $category->products()->count() }} products
+                                            </a>
                                         </td>
                                     </tr>
                                     @endif

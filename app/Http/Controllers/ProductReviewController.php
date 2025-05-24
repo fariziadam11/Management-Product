@@ -55,7 +55,18 @@ class ProductReviewController extends Controller
         $reviews = $query->paginate(10);
         $products = Product::all();
         
-        return view('reviews.index', compact('reviews', 'products'));
+        // Generate chart data for reviews over time
+        $reviewsData = ProductReview::selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+            
+        $reviewChartData = [
+            'labels' => $reviewsData->pluck('date')->toArray(),
+            'data' => $reviewsData->pluck('count')->toArray(),
+        ];
+        
+        return view('reviews.index', compact('reviews', 'products', 'reviewChartData'));
     }
     
     /**

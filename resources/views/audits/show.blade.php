@@ -3,34 +3,34 @@
 @section('page_heading', 'Audit Details')
 
 @section('content')
-<div class="container-fluid">
+<div class="container-fluid px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
     <div class="row">
-        <div class="col-lg-10 col-md-12 mx-auto">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                    <h6 class="m-0 font-weight-bold text-primary">
+        <div class="w-full lg:w-10/12 mx-auto">
+            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4 sm:mb-6">
+                <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <h6 class="text-base sm:text-lg font-semibold text-blue-600">
                         Audit #{{ $audit->id }} - {{ class_basename($audit->auditable_type) }}
-                        <span class="badge {{ $audit->event == 'created' ? 'bg-success' : ($audit->event == 'updated' ? 'bg-info' : ($audit->event == 'deleted' ? 'bg-danger' : 'bg-secondary')) }}">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $audit->event == 'created' ? 'bg-green-100 text-green-800' : ($audit->event == 'updated' ? 'bg-blue-100 text-blue-800' : ($audit->event == 'deleted' ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800')) }}">
                             {{ ucfirst($audit->event) }}
                         </span>
                     </h6>
                     <div>
-                        <a href="{{ route('audits.index') }}" class="btn btn-outline-primary btn-sm">
-                            <i class="bi bi-arrow-left me-1"></i> Back to Audit Logs
+                        <a href="{{ route('audits.index') }}" class="inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 border border-blue-600 text-blue-600 bg-white hover:bg-blue-50 rounded-md text-sm transition-colors duration-150 ease-in-out">
+                            <svg class="-ml-0.5 mr-1.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg> Back to Audit Logs
                         </a>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="row mb-4">
+                <div class="p-4 sm:p-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <h6 class="fw-bold">User</h6>
                                 @if($audit->user)
                                     <div class="d-flex align-items-center">
-                                        <img class="rounded-circle me-2" src="https://ui-avatars.com/api/?name={{ urlencode($audit->user->name) }}&background=4e73df&color=ffffff&size=32" alt="{{ $audit->user->name }}" width="32" height="32">
+                                        <img class="rounded-full mr-2" src="https://ui-avatars.com/api/?name={{ urlencode($audit->user->name) }}&background=4e73df&color=ffffff&size=32" alt="{{ $audit->user->name }}" width="32" height="32">
                                         <div>
                                             <div>{{ $audit->user->name }}</div>
-                                            <div class="small text-muted">{{ $audit->user->email }}</div>
+                                            <div class="text-xs text-gray-500">{{ $audit->user->email }}</div>
                                         </div>
                                     </div>
                                 @else
@@ -71,14 +71,14 @@
                     </div>
 
                     <div class="mb-4">
-                        <h6 class="fw-bold mb-3">Modified Data</h6>
+                        <h6 class="text-base font-medium text-gray-800 mb-3">Modified Data</h6>
                         @if($audit->event == 'created')
                             <div class="table-responsive">
                                 <table class="table table-bordered">
                                     <thead class="bg-light">
                                         <tr>
                                             <th style="width: 30%;">Field</th>
-                                            <th>Value</th>
+                                            <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -106,9 +106,9 @@
                                 <table class="table table-bordered">
                                     <thead class="bg-light">
                                         <tr>
-                                            <th style="width: 20%;">Field</th>
-                                            <th>Old Value</th>
-                                            <th>New Value</th>
+                                            <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/5">Field</th>
+                                            <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Old Value</th>
+                                            <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">New Value</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -127,7 +127,7 @@
                                                             {{ $audit->old_values[$key] }}
                                                         @endif
                                                     @else
-                                                        <span class="text-muted">N/A</span>
+                                                        <span class="text-xs sm:text-sm text-gray-400">N/A</span>
                                                     @endif
                                                 </td>
                                                 <td>
@@ -210,7 +210,7 @@
                     </div>
 
                     <div>
-                        <h6 class="fw-bold mb-3">Related Audits</h6>
+                        <h6 class="text-base font-medium text-gray-800 mb-3 md:text-lg">Related Audit Logs</h6>
                         <div class="table-responsive">
                             @php
                                 $relatedAudits = \App\Models\Audit::where('auditable_type', $audit->auditable_type)
@@ -220,55 +220,55 @@
                                     ->take(10)
                                     ->get();
                             @endphp
-                            <table class="table table-bordered table-hover">
+                            <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th>User</th>
-                                        <th>Event</th>
-                                        <th>Date & Time</th>
-                                        <th>Actions</th>
+                                        <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                                        <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                        <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date & Time</th>
+                                        <th class="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @forelse($relatedAudits as $relatedAudit)
-                                        <tr class="{{ $relatedAudit->id == $audit->id ? 'table-primary' : '' }}">
+                                        <tr class="{{ $relatedAudit->id == $audit->id ? 'bg-blue-50' : '' }} hover:bg-gray-50">
                                             <td>
                                                 @if($relatedAudit->user)
-                                                    <div class="d-flex align-items-center">
-                                                        <img class="rounded-circle me-2" src="https://ui-avatars.com/api/?name={{ urlencode($relatedAudit->user->name) }}&background=4e73df&color=ffffff&size=24" alt="{{ $relatedAudit->user->name }}" width="24" height="24">
+                                                    <div class="flex items-center">
+                                                        <img class="rounded-full mr-2" src="https://ui-avatars.com/api/?name={{ urlencode($relatedAudit->user->name) }}&background=4e73df&color=ffffff&size=24" alt="{{ $relatedAudit->user->name }}" width="24" height="24">
                                                         {{ $relatedAudit->user->name }}
                                                     </div>
                                                 @else
-                                                    <span class="text-muted">System</span>
+                                                    <span class="text-xs sm:text-sm text-gray-500">System</span>
                                                 @endif
                                             </td>
                                             <td>
                                                 @if($relatedAudit->event == 'created')
-                                                    <span class="badge bg-success">Created</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Created</span>
                                                 @elseif($relatedAudit->event == 'updated')
-                                                    <span class="badge bg-info">Updated</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Updated</span>
                                                 @elseif($relatedAudit->event == 'deleted')
-                                                    <span class="badge bg-danger">Deleted</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Deleted</span>
                                                 @elseif($relatedAudit->event == 'restored')
-                                                    <span class="badge bg-warning">Restored</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">Restored</span>
                                                 @else
-                                                    <span class="badge bg-secondary">{{ $relatedAudit->event }}</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">{{ $relatedAudit->event }}</span>
                                                 @endif
                                             </td>
                                             <td>{{ $relatedAudit->created_at->format('M d, Y H:i:s') }}</td>
                                             <td>
                                                 @if($relatedAudit->id != $audit->id)
-                                                    <a href="{{ route('audits.show', $relatedAudit->id) }}" class="btn btn-sm btn-info">
-                                                        <i class="bi bi-eye"></i> View
+                                                    <a href="{{ route('audits.show', $relatedAudit->id) }}" class="inline-flex items-center px-2 py-1 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700">
+                                                        <svg class="-ml-0.5 mr-1 h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg> View
                                                     </a>
                                                 @else
-                                                    <span class="badge bg-primary">Current</span>
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Current</span>
                                                 @endif
                                             </td>
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="text-center">No related audit logs found.</td>
+                                            <td colspan="4" class="px-3 sm:px-6 py-4 text-center text-xs sm:text-sm text-gray-500">No related audit logs found.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -282,6 +282,15 @@
 </div>
 
 <style>
+    /* Responsive styles */
+    @media (max-width: 640px) {
+        .overflow-x-auto {
+            margin-left: -1rem;
+            margin-right: -1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+    }
     pre {
         margin: 0;
         white-space: pre-wrap;
