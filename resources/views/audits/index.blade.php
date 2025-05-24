@@ -1,0 +1,173 @@
+@extends('layouts.app')
+
+@section('page_heading', 'Audit Log')
+
+@section('content')
+<div class="w-full">
+    <!-- Filters and Search -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-blue-600">Filter Audit Logs</h3>
+        </div>
+        <div class="p-6">
+            <form action="{{ route('audits.index') }}" method="GET" class="mb-0">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div>
+                        <label for="user_id" class="block text-sm font-medium text-gray-700 mb-1">User</label>
+                        <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 select2" id="user_id" name="user_id">
+                            <option value="">All Users</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
+                                    {{ $user->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="auditable_type" class="block text-sm font-medium text-gray-700 mb-1">Model Type</label>
+                        <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" id="auditable_type" name="auditable_type">
+                            <option value="">All Types</option>
+                            <option value="App\Models\User" {{ request('auditable_type') == 'App\Models\User' ? 'selected' : '' }}>User</option>
+                            <option value="App\Models\Role" {{ request('auditable_type') == 'App\Models\Role' ? 'selected' : '' }}>Role</option>
+                            <option value="App\Models\Category" {{ request('auditable_type') == 'App\Models\Category' ? 'selected' : '' }}>Category</option>
+                            <option value="App\Models\Product" {{ request('auditable_type') == 'App\Models\Product' ? 'selected' : '' }}>Product</option>
+                            <option value="App\Models\ProductReview" {{ request('auditable_type') == 'App\Models\ProductReview' ? 'selected' : '' }}>Product Review</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="event" class="block text-sm font-medium text-gray-700 mb-1">Event</label>
+                        <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" id="event" name="event">
+                            <option value="">All Events</option>
+                            <option value="created" {{ request('event') == 'created' ? 'selected' : '' }}>Created</option>
+                            <option value="updated" {{ request('event') == 'updated' ? 'selected' : '' }}>Updated</option>
+                            <option value="deleted" {{ request('event') == 'deleted' ? 'selected' : '' }}>Deleted</option>
+                            <option value="restored" {{ request('event') == 'restored' ? 'selected' : '' }}>Restored</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="date_range" class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                        <div class="flex items-center space-x-2">
+                            <input type="date" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" id="from_date" name="from_date" value="{{ request('from_date') }}">
+                            <span class="text-gray-500">to</span>
+                            <input type="date" class="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" id="to_date" name="to_date" value="{{ request('to_date') }}">
+                        </div>
+                    </div>
+                    <div class="md:col-span-2 lg:col-span-4">
+                        <div class="flex justify-end space-x-3 mt-4">
+                            <a href="{{ route('audits.index') }}" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-md transition-colors duration-150 ease-in-out">Reset</a>
+                            <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-150 ease-in-out">Apply Filters</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Audit Logs Table -->
+    <x-tailwind.card>
+        <x-tailwind.table :headers="['Event', 'Model', 'User', 'Date', '']">
+            @forelse($audits as $audit)
+                <tr>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        @if($audit->event == 'created')
+                            <x-tailwind.badge variant="success" icon="plus-circle" size="sm">
+                                Created
+                            </x-tailwind.badge>
+                        @elseif($audit->event == 'updated')
+                            <x-tailwind.badge variant="info" icon="pencil" size="sm">
+                                Updated
+                            </x-tailwind.badge>
+                        @elseif($audit->event == 'deleted')
+                            <x-tailwind.badge variant="danger" icon="trash" size="sm">
+                                Deleted
+                            </x-tailwind.badge>
+                        @else
+                            <x-tailwind.badge variant="secondary" size="sm">
+                                {{ ucfirst($audit->event) }}
+                            </x-tailwind.badge>
+                        @endif
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ class_basename($audit->auditable_type) }} #{{ $audit->auditable_id }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ optional($audit->user)->name ?? 'System' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ $audit->created_at->format('M d, Y H:i:s') }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <x-tailwind.button
+                            href="{{ route('audits.show', $audit) }}"
+                            variant="outline-primary"
+                            size="sm"
+                            icon="eye"
+                        >
+                            View Details
+                        </x-tailwind.button>
+                    </td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                        No audit logs found.
+                    </td>
+                </tr>
+            @endforelse
+        </x-tailwind.table>
+
+        @if($audits->hasPages())
+            <div class="mt-4">
+                {{ $audits->links('components.tailwind.pagination') }}
+            </div>
+        @endif
+    </x-tailwind.card>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-6 flex justify-center">
+                <div class="pagination-tailwind">
+                    {{ $audits->appends(request()->query())->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Custom styles for pre elements */
+    pre {
+        margin: 0;
+        white-space: pre-wrap;
+    }
+
+    /* Custom styles for Laravel pagination with Tailwind */
+    .pagination-tailwind nav > div {
+        @apply flex justify-between items-center;
+    }
+
+    .pagination-tailwind nav > div > div:first-child {
+        @apply hidden sm:flex sm:flex-1 sm:items-center sm:justify-between;
+    }
+
+    .pagination-tailwind nav > div > div:first-child > div:first-child {
+        @apply text-sm text-gray-700;
+    }
+
+    .pagination-tailwind nav > div > div:first-child > div:last-child {
+        @apply flex;
+    }
+
+    .pagination-tailwind nav span.relative,
+    .pagination-tailwind nav button.relative {
+        @apply relative inline-flex items-center px-4 py-2 text-sm font-medium;
+    }
+
+    .pagination-tailwind nav span.relative.text-gray-700 {
+        @apply text-gray-500 bg-white border border-gray-300;
+    }
+
+    .pagination-tailwind nav button.relative.text-gray-500 {
+        @apply text-gray-500 bg-white border border-gray-300 hover:bg-gray-50;
+    }
+@endsection
