@@ -1,17 +1,12 @@
 <!-- Sidebar -->
-<div 
+<div
      :class="{ 'translate-x-0': $store.app.sidebarOpen, '-translate-x-full': !$store.app.sidebarOpen }"
-     class="fixed inset-y-0 left-0 z-40 w-64 flex flex-col pt-16 transform transition-transform duration-300 ease-in-out md:translate-x-0 bg-gradient-to-b from-blue-800 to-blue-900 md:sticky md:h-screen">
+     class="fixed inset-y-0 left-0 z-40 w-64 flex flex-col pt-16 transform transition-transform duration-300 ease-in-out md:translate-x-0 bg-gradient-to-b from-blue-800 to-blue-900 h-screen overflow-hidden">
 
     <!-- Sidebar Content -->
-    <div class="flex flex-col flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-transparent">
+    <div class="flex flex-col flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-w-1.5">
         <!-- Sidebar Header -->
         <div class="flex items-center flex-shrink-0 px-4 py-5">
-            <div class="flex items-center justify-center w-10 h-10 rounded-full bg-blue-700 shadow-lg">
-                <i class="bi bi-box-seam text-white text-xl"></i>
-            </div>
-            <div class="ml-3 text-xl font-medium text-white">LMS</div>
-
             <!-- Mobile Close Button -->
             <button @click="$store.app.toggleSidebar()" class="ml-auto p-1 rounded-full text-blue-200 hover:text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-white md:hidden transition-colors duration-200">
                 <span class="sr-only">Close sidebar</span>
@@ -51,7 +46,7 @@
 
 <!-- Sidebar Backdrop (Mobile) -->
 <div
-    x-data
+    x-cloak
     x-show="$store.app.sidebarOpen && window.innerWidth < 768"
     @click="$store.app.toggleSidebar()"
     x-transition:enter="transition-opacity ease-linear duration-300"
@@ -61,5 +56,4 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     class="fixed inset-0 bg-gray-600 bg-opacity-75 z-30 md:hidden"
-    style="display: none;"
 ></div>

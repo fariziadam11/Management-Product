@@ -59,15 +59,28 @@
                 <!-- User Menu -->
                 <div class="relative">
                     @guest
+                    <!-- Guest (Unauthenticated) View -->
                     <div class="flex space-x-1 sm:space-x-2">
-                        <a href="{{ route('login') }}" class="text-blue-100 hover:bg-blue-700 hover:text-white px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium flex items-center transition-colors duration-200">
-                            <i class="bi bi-box-arrow-in-right mr-1 sm:mr-2"></i> <span class="hidden xs:inline">{{ __('Login') }}</span>
+                        <!-- Login Button -->
+                        <a href="{{ route('login') }}"
+                           class="text-blue-100 hover:bg-blue-700 hover:text-white px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium flex items-center transition-colors duration-200 group">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                            </svg>
+                            <span class="hidden xs:inline">{{ __('Login') }}</span>
                         </a>
-                        <a href="{{ route('register') }}" class="bg-blue-600 text-white hover:bg-blue-500 px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium flex items-center transition-colors duration-200">
-                            <i class="bi bi-person-plus mr-1 sm:mr-2"></i> <span class="hidden xs:inline">{{ __('Register') }}</span>
+
+                        <!-- Register Button (More prominent) -->
+                        <a href="{{ route('register') }}"
+                           class="bg-blue-600 text-white hover:bg-blue-500 px-2 sm:px-3 py-2 rounded-md text-xs sm:text-sm font-medium flex items-center transition-all duration-200 hover:shadow-md group">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2 group-hover:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                            </svg>
+                            <span class="hidden xs:inline">{{ __('Register') }}</span>
                         </a>
                     </div>
                     @else
+                    <!-- Authenticated User View -->
                     @include('components.tailwind.user-dropdown')
                     @endguest
                 </div>
