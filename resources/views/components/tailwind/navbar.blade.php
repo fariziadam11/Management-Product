@@ -1,5 +1,5 @@
-<nav class="bg-gradient-to-r from-blue-800 to-blue-900 shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
+<nav class="fixed w-full bg-gradient-to-r from-blue-800 to-blue-900 shadow-md z-50" style="top: 0; left: 0; right: 0;">
+    <div class="max-w-full px-2 sm:px-4 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex items-center">
                 <!-- Mobile menu button-->

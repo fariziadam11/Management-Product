@@ -3,304 +3,263 @@
 @section('page_heading', 'Edit Product')
 
 @section('page_actions')
-<a href="{{ route('products.index') }}" class="btn btn-secondary">
-    <i class="bi bi-arrow-left"></i> Back to Products
+<a href="{{ route('products.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-200 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-gray-300 active:bg-gray-300 focus:outline-none focus:border-gray-300 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
+    </svg>
+    Back to Products
 </a>
 @endsection
 
 @section('content')
-<div class="container-fluid">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card shadow mb-4">
-                <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Product Information</h6>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        @method('PUT')
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Product Information</h3>
+        </div>
+        <div class="p-6">
+            <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
 
-                        <div class="row mb-4">
-                            <div class="col-md-8">
-                                <!-- Basic Information -->
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Product Name <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $product->name) }}" required>
-                                    @error('name')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Left Column -->
+                    <div class="lg:col-span-2 space-y-6">
+                        <!-- Basic Information -->
+                        <div>
+                            <label for="name" class="block text-sm font-medium text-gray-700">Product Name <span class="text-red-500">*</span></label>
+                            <input type="text" id="name" name="name" value="{{ old('name', $product->name) }}" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('name') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
+                            @error('name')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
 
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="category_id" class="form-label">Category <span class="text-danger">*</span></label>
-                                            <select class="form-select @error('category_id') is-invalid @enderror" id="category_id" name="category_id" required>
-                                                <option value="">Select Category</option>
-                                                @foreach($categories as $category)
-                                                    <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
-                                                        {{ $category->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            @error('category_id')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="sku" class="form-label">SKU</label>
-                                            <input type="text" class="form-control @error('sku') is-invalid @enderror" id="sku" name="sku" value="{{ old('sku', $product->sku) }}">
-                                            @error('sku')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="price" class="form-label">Price ($) <span class="text-danger">*</span></label>
-                                            <input type="number" step="0.01" min="0" class="form-control @error('price') is-invalid @enderror" id="price" name="price" value="{{ old('price', $product->price) }}" required>
-                                            @error('price')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="mb-3">
-                                            <label for="stock" class="form-label">Stock <span class="text-danger">*</span></label>
-                                            <input type="number" min="0" class="form-control @error('stock') is-invalid @enderror" id="stock" name="stock" value="{{ old('stock', $product->stock) }}" required>
-                                            @error('stock')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Description <span class="text-danger">*</span></label>
-                                    <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="4" required>{{ old('description', $product->description) }}</textarea>
-                                    @error('description')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="category_id" class="block text-sm font-medium text-gray-700">Category <span class="text-red-500">*</span></label>
+                                <select id="category_id" name="category_id" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('category_id') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
+                                    <option value="">Select Category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
+                                            {{ $category->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('category_id')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
 
-                            <div class="col-md-4">
-                                <!-- Image Upload -->
-                                <div class="mb-3">
-                                    <label for="image" class="form-label">Product Image</label>
-                                    <div class="image-upload-container mb-3">
-                                        <div class="image-preview" id="imagePreview">
-                                            @if($product->image)
-                                                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid rounded">
-                                            @else
-                                                <img src="{{ asset('images/placeholder.png') }}" alt="Image Preview" class="img-fluid rounded">
-                                            @endif
-                                            <div class="image-upload-placeholder" style="{{ $product->image ? 'display: none;' : '' }}">
-                                                <i class="bi bi-cloud-arrow-up"></i>
-                                                <p>Click or drag to upload</p>
-                                            </div>
-                                        </div>
-                                        <input type="file" class="form-control @error('image') is-invalid @enderror" id="image" name="image" accept="image/*">
-                                    </div>
-                                    @error('image')
-                                        <div class="invalid-feedback d-block">{{ $message }}</div>
-                                    @enderror
-                                    <small class="text-muted">Recommended size: 800x800px. Max file size: 2MB.</small>
-
-                                    @if($product->image)
-                                        <div class="form-check mt-2">
-                                            <input class="form-check-input" type="checkbox" id="remove_image" name="remove_image" value="1">
-                                            <label class="form-check-label" for="remove_image">
-                                                Remove current image
-                                            </label>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <!-- PDF Upload -->
-                                <div class="mb-3">
-                                    <label for="pdf_path" class="form-label">Product Documentation (PDF)</label>
-                                    <input type="file" class="form-control @error('pdf_path') is-invalid @enderror" id="pdf_path" name="pdf_path" accept=".pdf">
-                                    @error('pdf_path')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-
-                                    @if($product->pdf_path)
-                                        <div class="mt-2">
-                                            <a href="{{ asset('storage/' . $product->pdf_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">
-                                                <i class="bi bi-file-earmark-pdf"></i> View Current PDF
-                                            </a>
-
-                                            <div class="form-check mt-2">
-                                                <input class="form-check-input" type="checkbox" id="remove_pdf" name="remove_pdf" value="1">
-                                                <label class="form-check-label" for="remove_pdf">
-                                                    Remove current PDF
-                                                </label>
-                                            </div>
-                                        </div>
-                                    @endif
-                                </div>
-
-                                <!-- Status -->
-                                <div class="mb-3">
-                                    <label class="form-label d-block">Status</label>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="is_active" id="statusActive" value="1" {{ old('is_active', $product->is_active) == 1 ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="statusActive">Active</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="is_active" id="statusInactive" value="0" {{ old('is_active', $product->is_active) == 0 ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="statusInactive">Inactive</label>
-                                    </div>
-                                </div>
-
-                                <!-- Featured -->
-                                <div class="mb-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="is_featured" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="is_featured">
-                                            Featured Product
-                                        </label>
-                                    </div>
-                                </div>
+                            <div>
+                                <label for="sku" class="block text-sm font-medium text-gray-700">SKU</label>
+                                <input type="text" id="sku" name="sku" value="{{ old('sku', $product->sku) }}"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('sku') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
+                                @error('sku')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
                             </div>
                         </div>
 
-                        <div class="row mb-4">
-                            <div class="col-12">
-                                <h6 class="font-weight-bold">Product Specifications</h6>
-                                <div id="specifications-container">
-                                    @php
-                                        $details = json_decode($product->details, true) ?? [];
-                                    @endphp
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label for="price" class="block text-sm font-medium text-gray-700">Price ($) <span class="text-red-500">*</span></label>
+                                <input type="number" step="0.01" min="0" id="price" name="price" value="{{ old('price', $product->price) }}" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('price') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
+                                @error('price')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
 
-                                    @if(count($details) > 0)
-                                        @foreach($details as $key => $value)
-                                            <div class="specification-row row mb-2">
-                                                <div class="col-md-5">
-                                                    <input type="text" class="form-control" name="spec_keys[]" value="{{ $key }}" placeholder="Specification (e.g. Weight)">
-                                                </div>
-                                                <div class="col-md-5">
-                                                    <input type="text" class="form-control" name="spec_values[]" value="{{ $value }}" placeholder="Value (e.g. 2.5 kg)">
-                                                </div>
-                                                <div class="col-md-2">
-                                                    <button type="button" class="btn btn-sm btn-danger remove-specification">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                                </div>
+                            <div>
+                                <label for="stock" class="block text-sm font-medium text-gray-700">Stock <span class="text-red-500">*</span></label>
+                                <input type="number" min="0" id="stock" name="stock" value="{{ old('stock', $product->stock) }}" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('stock') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
+                                @error('stock')
+                                    <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                                @enderror
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="description" class="block text-sm font-medium text-gray-700">Description <span class="text-red-500">*</span></label>
+                            <textarea id="description" name="description" rows="4" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('description') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">{{ old('description', $product->description) }}</textarea>
+                            @error('description')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <!-- Product Specifications -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Product Specifications</label>
+                            <div id="specifications-container" class="mt-2 space-y-2">
+                                @php
+                                    $details = json_decode($product->details, true) ?? [];
+                                @endphp
+
+                                @if(count($details) > 0)
+                                    @foreach($details as $key => $value)
+                                        <div class="specification-row grid grid-cols-12 gap-2 items-center">
+                                            <div class="col-span-5">
+                                                <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                    name="spec_keys[]" value="{{ $key }}" placeholder="Specification (e.g. Weight)">
                                             </div>
-                                        @endforeach
-                                    @else
-                                        <div class="specification-row row mb-2">
-                                            <div class="col-md-5">
-                                                <input type="text" class="form-control" name="spec_keys[]" placeholder="Specification (e.g. Weight)">
+                                            <div class="col-span-5">
+                                                <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                    name="spec_values[]" value="{{ $value }}" placeholder="Value (e.g. 2.5 kg)">
                                             </div>
-                                            <div class="col-md-5">
-                                                <input type="text" class="form-control" name="spec_values[]" placeholder="Value (e.g. 2.5 kg)">
-                                            </div>
-                                            <div class="col-md-2">
-                                                <button type="button" class="btn btn-sm btn-danger remove-specification">
-                                                    <i class="bi bi-trash"></i>
+                                            <div class="col-span-2">
+                                                <button type="button" class="remove-specification inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                    <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                                    </svg>
                                                 </button>
                                             </div>
                                         </div>
+                                    @endforeach
+                                @else
+                                    <div class="specification-row grid grid-cols-12 gap-2 items-center">
+                                        <div class="col-span-5">
+                                            <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                name="spec_keys[]" placeholder="Specification (e.g. Weight)">
+                                        </div>
+                                        <div class="col-span-5">
+                                            <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                name="spec_values[]" placeholder="Value (e.g. 2.5 kg)">
+                                        </div>
+                                        <div class="col-span-2">
+                                            <button type="button" class="remove-specification inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                                <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                            <button type="button" id="add-specification" class="mt-2 inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <svg class="-ml-0.5 mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                Add Specification
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="space-y-6">
+                        <!-- Image Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Product Image</label>
+                            <div class="mt-1 relative">
+                                <div class="group relative h-48 w-full rounded-md border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden cursor-pointer hover:border-blue-400 transition-colors duration-150" id="imagePreview">
+                                    @if($product->image)
+                                        <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="absolute inset-0 w-full h-full object-cover">
+                                    @else
+                                        <img src="{{ asset('images/placeholder.png') }}" alt="Image Preview" class="absolute inset-0 w-full h-full object-cover">
                                     @endif
+                                    <div class="relative z-10 text-center p-4 {{ $product->image ? 'opacity-0 group-hover:opacity-100 bg-black bg-opacity-50 text-white rounded-md' : 'text-gray-400' }} transition-opacity duration-150">
+                                        <svg class="mx-auto h-12 w-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                                        </svg>
+                                        <p class="mt-1 text-sm">Click or drag to upload</p>
+                                        <p class="mt-1 text-xs">Recommended size: 800x800px</p>
+                                    </div>
                                 </div>
-                                <button type="button" class="btn btn-sm btn-secondary mt-2" id="add-specification">
-                                    <i class="bi bi-plus-circle"></i> Add Specification
-                                </button>
+                                <input type="file" id="image" name="image" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                            </div>
+                            @error('image')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+
+                            @if($product->image)
+                                <div class="mt-2 flex items-center">
+                                    <input id="remove_image" name="remove_image" type="checkbox" value="1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                    <label for="remove_image" class="ml-2 block text-sm text-gray-900">Remove current image</label>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- PDF Upload -->
+                        <div>
+                            <label for="pdf_path" class="block text-sm font-medium text-gray-700">Product Documentation (PDF)</label>
+                            <div class="mt-1 flex items-center">
+                                <input type="file" id="pdf_path" name="pdf_path" accept=".pdf" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                            </div>
+                            @error('pdf_path')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+
+                            @if($product->pdf_path)
+                                <div class="mt-2">
+                                    <a href="{{ asset('storage/' . $product->pdf_path) }}" target="_blank" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <svg class="-ml-0.5 mr-2 h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        View Current PDF
+                                    </a>
+                                    <div class="mt-2 flex items-center">
+                                        <input id="remove_pdf" name="remove_pdf" type="checkbox" value="1" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                        <label for="remove_pdf" class="ml-2 block text-sm text-gray-900">Remove current PDF</label>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Status -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <div class="mt-2 space-y-2">
+                                <div class="flex items-center">
+                                    <input id="statusActive" name="is_active" type="radio" value="1" {{ old('is_active', $product->is_active) == 1 ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                    <label for="statusActive" class="ml-2 block text-sm text-gray-900">Active</label>
+                                </div>
+                                <div class="flex items-center">
+                                    <input id="statusInactive" name="is_active" type="radio" value="0" {{ old('is_active', $product->is_active) == 0 ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
+                                    <label for="statusInactive" class="ml-2 block text-sm text-gray-900">Inactive</label>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-12">
-                                <hr>
-                                <div class="d-flex justify-content-end">
-                                    <a href="{{ route('products.show', $product->id) }}" class="btn btn-secondary me-2">Cancel</a>
-                                    <button type="submit" class="btn btn-primary">Update Product</button>
-                                </div>
-                            </div>
+                        <!-- Featured -->
+                        <div class="flex items-center">
+                            <input id="is_featured" name="is_featured" type="checkbox" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                            <label for="is_featured" class="ml-2 block text-sm text-gray-900">Featured Product</label>
                         </div>
-                    </form>
+                    </div>
                 </div>
-            </div>
+
+                <!-- Form Actions -->
+                <div class="mt-8 pt-5 border-t border-gray-200">
+                    <div class="flex justify-end space-x-3">
+                        <a href="{{ route('products.show', $product->id) }}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Cancel
+                        </a>
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Update Product
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
-
-<style>
-    .image-upload-container {
-        position: relative;
-    }
-
-    .image-preview {
-        width: 100%;
-        height: 200px;
-        border: 2px dashed #ddd;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        position: relative;
-        cursor: pointer;
-    }
-
-    .image-preview img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-
-    .image-upload-placeholder {
-        text-align: center;
-        color: #aaa;
-        z-index: 1;
-    }
-
-    .image-upload-placeholder i {
-        font-size: 2rem;
-        margin-bottom: 10px;
-    }
-
-    .image-preview:hover .image-upload-placeholder {
-        color: #4e73df;
-    }
-
-    #image {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-        cursor: pointer;
-    }
-</style>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Image preview
         const imageInput = document.getElementById('image');
-        const imagePreview = document.getElementById('imagePreview').querySelector('img');
-        const placeholder = document.querySelector('.image-upload-placeholder');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = imagePreview.querySelector('img');
 
         imageInput.addEventListener('change', function() {
             if (this.files && this.files[0]) {
                 const reader = new FileReader();
 
                 reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    placeholder.style.display = 'none';
+                    previewImage.src = e.target.result;
                 }
 
                 reader.readAsDataURL(this.files[0]);
@@ -311,17 +270,21 @@
         document.getElementById('add-specification').addEventListener('click', function() {
             const container = document.getElementById('specifications-container');
             const newRow = document.createElement('div');
-            newRow.className = 'specification-row row mb-2';
+            newRow.className = 'specification-row grid grid-cols-12 gap-2 items-center';
             newRow.innerHTML = `
-                <div class="col-md-5">
-                    <input type="text" class="form-control" name="spec_keys[]" placeholder="Specification (e.g. Weight)">
+                <div class="col-span-5">
+                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        name="spec_keys[]" placeholder="Specification (e.g. Weight)">
                 </div>
-                <div class="col-md-5">
-                    <input type="text" class="form-control" name="spec_values[]" placeholder="Value (e.g. 2.5 kg)">
+                <div class="col-span-5">
+                    <input type="text" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                        name="spec_values[]" placeholder="Value (e.g. 2.5 kg)">
                 </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-sm btn-danger remove-specification">
-                        <i class="bi bi-trash"></i>
+                <div class="col-span-2">
+                    <button type="button" class="remove-specification inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <svg class="h-4 w-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
                     </button>
                 </div>
             `;
@@ -345,11 +308,7 @@
         const removeImageCheckbox = document.getElementById('remove_image');
         if (removeImageCheckbox) {
             removeImageCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    document.getElementById('image').disabled = true;
-                } else {
-                    document.getElementById('image').disabled = false;
-                }
+                document.getElementById('image').disabled = this.checked;
             });
         }
 
@@ -357,11 +316,7 @@
         const removePdfCheckbox = document.getElementById('remove_pdf');
         if (removePdfCheckbox) {
             removePdfCheckbox.addEventListener('change', function() {
-                if (this.checked) {
-                    document.getElementById('pdf_path').disabled = true;
-                } else {
-                    document.getElementById('pdf_path').disabled = false;
-                }
+                document.getElementById('pdf_path').disabled = this.checked;
             });
         }
     });

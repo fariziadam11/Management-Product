@@ -4,6 +4,12 @@
 
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
+    <!-- Debug Information -->
+    <div class="bg-blue-100 p-4 mb-4 rounded-md">
+        <h3 class="font-semibold">Debug Information:</h3>
+        <p>Audit count: {{ isset($audits) ? $audits->count() : 'No audits variable' }}</p>
+        <p>Total results: {{ isset($audits) && method_exists($audits, 'total') ? $audits->total() : 'N/A' }}</p>
+    </div>
     <!-- Filters and Search -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4 sm:mb-6">
         <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
@@ -141,23 +147,17 @@
         </div>
 
         @if($audits->hasPages())
-            <div class="mt-4">
-                {{ $audits->links('components.tailwind.pagination') }}
-            </div>
-        @endif
-    </x-tailwind.card>
-            </div>
-
-            <!-- Pagination -->
             <div class="mt-4 sm:mt-6 flex justify-center">
                 <div class="pagination-tailwind">
                     {{ $audits->appends(request()->query())->links() }}
                 </div>
             </div>
-        </div>
-    </div>
+        @endif
+    </x-tailwind.card>
 </div>
+@endsection
 
+@push('styles')
 <style>
     /* Responsive table styles */
     @media (max-width: 640px) {
@@ -201,4 +201,5 @@
     .pagination-tailwind nav button.relative.text-gray-500 {
         @apply text-gray-500 bg-white border border-gray-300 hover:bg-gray-50;
     }
-@endsection
+</style>
+@endpush

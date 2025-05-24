@@ -54,7 +54,7 @@
 
     <!-- Tailwind CSS -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
+
     <!-- Fix for Alpine.js elements flashing before initialization -->
     <style>
         [x-cloak] { display: none !important; }
