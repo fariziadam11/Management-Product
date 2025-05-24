@@ -11,10 +11,10 @@ use OwenIt\Auditing\Auditable as AuditableTrait;
 class Role extends Model implements Auditable
 {
     use HasFactory, SoftDeletes, AuditableTrait;
-    
+
     protected $keyType = 'int';
     public $incrementing = true;
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -28,7 +28,7 @@ class Role extends Model implements Auditable
         'permissions',
         'last_used_at',
     ];
-    
+
     /**
      * The attributes that should be cast.
      *
@@ -40,7 +40,7 @@ class Role extends Model implements Auditable
         'permissions' => 'json',
         'last_used_at' => 'datetime',
     ];
-    
+
     /**
      * Get the users associated with this role.
      */
@@ -48,7 +48,7 @@ class Role extends Model implements Auditable
     {
         return $this->hasMany(User::class);
     }
-    
+
     /**
      * Set permissions for this role
      *
@@ -60,7 +60,7 @@ class Role extends Model implements Auditable
         $this->permissions = json_encode($permissions);
         return $this;
     }
-    
+
     /**
      * Get permissions for this role
      *
@@ -70,7 +70,7 @@ class Role extends Model implements Auditable
     {
         return json_decode($this->permissions, true) ?: [];
     }
-    
+
     /**
      * Check if role has a specific permission
      *
@@ -81,14 +81,14 @@ class Role extends Model implements Auditable
     {
         return in_array($permission, $this->getPermissions());
     }
-    
+
     /**
      * Boot the model.
      */
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             $model->uuid = (string) \Illuminate\Support\Str::uuid();
         });

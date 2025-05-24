@@ -11,18 +11,94 @@
 @endsection
 
 @section('content')
-<div class="bg-white rounded-lg shadow-sm overflow-hidden">
-    <div class="p-4 sm:p-6 border-b border-gray-200">
-        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-3 sm:space-y-0">
-            <h2 class="text-lg font-medium text-gray-900">Product List</h2>
-            <div class="relative rounded-md shadow-sm max-w-xs">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <i class="bi bi-search text-gray-400"></i>
-                </div>
-                <input type="text" id="product-search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Search products...">
+<div class="space-y-6">
+    <!-- Filters and Search -->
+    <div x-data="{showFilters: true}" class="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div class="px-4 py-3 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+            <div class="flex items-center justify-between w-full sm:w-auto">
+                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                    <i class="bi bi-funnel mr-2 text-blue-600"></i>
+                    <span>Filter Products</span>
+                </h3>
+                <button @click="showFilters = !showFilters" class="text-gray-500 hover:text-gray-700 focus:outline-none sm:ml-2">
+                    <i class="bi" :class="showFilters ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                </button>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('export.form', ['type' => 'products']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-download mr-1.5"></i> Export
+                </a>
+                <a href="{{ route('import.form', ['type' => 'products']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-upload mr-1.5"></i> Import
+                </a>
+                @if(auth()->user()->hasAnyRole('admin', 'manager', 'editor'))
+                <a href="{{ route('products.create') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-plus-circle mr-1.5"></i> Create
+                </a>
+                @endif
             </div>
         </div>
+        <div x-show="showFilters" x-transition class="px-4 py-4 bg-white">
+            <form action="{{ route('products.index') }}" method="GET" class="space-y-4 md:space-y-0">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-4 items-center">
+                    <div class="lg:col-span-4">
+                        <div class="relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="bi bi-search text-gray-400"></i>
+                            </div>
+                            <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                                id="search" name="search" placeholder="Search products..." value="{{ request('search') }}">
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" name="category_id">
+                            <option value="">All Categories</option>
+                            @foreach($categories as $category)
+                                <option value="{{ $category->id }}" {{ request('category_id') == $category->id ? 'selected' : '' }}>
+                                    {{ $category->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" name="status">
+                            <option value="">All Status</option>
+                            <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
+                            <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            <option value="draft" {{ request('status') == 'draft' ? 'selected' : '' }}>Draft</option>
+                        </select>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" name="stock">
+                            <option value="">All Stock</option>
+                            <option value="in_stock" {{ request('stock') == 'in_stock' ? 'selected' : '' }}>In Stock</option>
+                            <option value="low_stock" {{ request('stock') == 'low_stock' ? 'selected' : '' }}>Low Stock</option>
+                            <option value="out_of_stock" {{ request('stock') == 'out_of_stock' ? 'selected' : '' }}>Out of Stock</option>
+                        </select>
+                    </div>
+                    <div class="lg:col-span-2">
+                        <select class="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md" name="sort">
+                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest First</option>
+                            <option value="oldest" {{ request('sort') == 'oldest' ? 'selected' : '' }}>Oldest First</option>
+                            <option value="price_low" {{ request('sort') == 'price_low' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price_high" {{ request('sort') == 'price_high' ? 'selected' : '' }}>Price: High to Low</option>
+                            <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Name (A-Z)</option>
+                            <option value="name_desc" {{ request('sort') == 'name_desc' ? 'selected' : '' }}>Name (Z-A)</option>
+                        </select>
+                    </div>
+                    <div class="lg:col-span-1">
+                        <button type="submit" class="w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                            <i class="bi bi-funnel-fill mr-2"></i>
+                            Filter
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+
+    <!-- Products Table -->
+    <div class="bg-white rounded-lg shadow-sm overflow-hidden">
     
     <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">

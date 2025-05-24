@@ -55,6 +55,10 @@ class ExportImportController extends Controller
         } elseif ($type === 'categories') {
             $categories = Category::where('is_active', true)->get();
             return view('export-import.export-form', compact('type', 'fields', 'categories', 'previousExports'));
+        } elseif ($type === 'audits') {
+            // For audits, we might want to include users for filtering
+            $users = User::all();
+            return view('export-import.export-form', compact('type', 'fields', 'users', 'previousExports'));
         }
         
         return view('export-import.export-form', compact('type', 'fields', 'previousExports'));
@@ -84,11 +88,32 @@ class ExportImportController extends Controller
         $fileName = $type . '_export_' . Str::random(10) . '.xlsx';
         $filePath = 'exports/' . $fileName;
         
-        // Dispatch export job to queue
-        ProcessExport::dispatch($type, $fields, $filePath);
-        
-        return redirect()->route('dashboard')
-            ->with('success', 'Export is being processed in the background. You will be notified when it is ready for download.');
+        // For immediate export (not using queue)
+        if ($type === 'audits') {
+            // Create export record
+            $export = new \App\Models\Export([
+                'type' => $type,
+                'filename' => $fileName,
+                'path' => $filePath,
+                'status' => 'completed',
+                'uuid' => Str::uuid(),
+                'record_count' => \App\Models\Audit::count(),
+                'format' => 'xlsx'
+            ]);
+            $export->save();
+            
+            // Generate export file
+            Excel::store(new \App\Exports\AuditExport($fields), 'public/' . $filePath);
+            
+            return redirect()->route('export.download', $fileName)
+                ->with('success', 'Your export has been generated successfully.');
+        } else {
+            // Dispatch export job to queue for other types
+            ProcessExport::dispatch($type, $fields, $filePath);
+            
+            return redirect()->route('dashboard')
+                ->with('success', 'Export is being processed in the background. You will be notified when it is ready for download.');
+        }
     }
     
     /**
@@ -345,6 +370,20 @@ class ExportImportController extends Controller
                     'verified_at' => 'Verified At',
                     'created_at' => 'Created At',
                     'updated_at' => 'Updated At',
+                ];
+            case 'audits':
+                return [
+                    'id' => 'ID',
+                    'user_id' => 'User ID',
+                    'event' => 'Event',
+                    'auditable_type' => 'Model Type',
+                    'auditable_id' => 'Model ID',
+                    'old_values' => 'Old Values',
+                    'new_values' => 'New Values',
+                    'url' => 'URL',
+                    'ip_address' => 'IP Address',
+                    'user_agent' => 'User Agent',
+                    'created_at' => 'Created At',
                 ];
             default:
                 return [];

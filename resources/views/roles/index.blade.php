@@ -11,11 +11,22 @@
 @section('content')
 <div class="space-y-6">
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+        <div class="px-4 py-3 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <h3 class="text-lg font-medium text-gray-900 flex items-center">
                 <i class="bi bi-shield-lock mr-2 text-blue-600"></i>
                 <span>Roles</span>
             </h3>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('export.form', ['type' => 'roles']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-download mr-1.5"></i> Export
+                </a>
+                <a href="{{ route('import.form', ['type' => 'roles']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-upload mr-1.5"></i> Import
+                </a>
+                <a href="{{ route('roles.create') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-plus-circle mr-1.5"></i> Create
+                </a>
+            </div>
         </div>
         <div class="p-4 sm:p-6">
             <!-- Filters -->

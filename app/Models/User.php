@@ -15,7 +15,7 @@ class User extends Authenticatable implements Auditable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, SoftDeletes, AuditableTrait;
-    
+
     protected $keyType = 'int';
     public $incrementing = true;
 
@@ -59,7 +59,7 @@ class User extends Authenticatable implements Auditable
             'preferences' => 'json',
         ];
     }
-    
+
     /**
      * Get the role associated with the user.
      */
@@ -67,7 +67,7 @@ class User extends Authenticatable implements Auditable
     {
         return $this->belongsTo(Role::class);
     }
-    
+
     /**
      * Check if user has a specific role
      *
@@ -84,7 +84,7 @@ class User extends Authenticatable implements Auditable
     {
         return $this->role && $this->role->name === $roleName;
     }
-    
+
     /**
      * Check if user has any of the given roles
      *
@@ -96,14 +96,14 @@ class User extends Authenticatable implements Auditable
         if (!is_array($roles)) {
             $roles = func_get_args();
         }
-        
+
         if (!$this->role) {
             return false;
         }
-        
+
         return in_array($this->role->name, $roles);
     }
-    
+
     /**
      * Check if user has permission through their role
      *
@@ -115,14 +115,14 @@ class User extends Authenticatable implements Auditable
         if (!$this->role || !$this->role->permissions) {
             return false;
         }
-        
-        $permissions = is_array($this->role->permissions) 
-            ? $this->role->permissions 
+
+        $permissions = is_array($this->role->permissions)
+            ? $this->role->permissions
             : json_decode($this->role->permissions, true);
-            
+
         return in_array($permission, $permissions ?: []);
     }
-    
+
     /**
      * Get the reviews for the user.
      */
@@ -130,7 +130,7 @@ class User extends Authenticatable implements Auditable
     {
         return $this->hasMany(ProductReview::class);
     }
-    
+
     /**
      * Get the user's notifications.
      */
@@ -139,14 +139,14 @@ class User extends Authenticatable implements Auditable
         return $this->morphMany(DatabaseNotification::class, 'notifiable')
             ->orderBy('created_at', 'desc');
     }
-    
+
     /**
      * Boot the model.
      */
     protected static function boot()
     {
         parent::boot();
-        
+
         static::creating(function ($model) {
             $model->uuid = (string) \Illuminate\Support\Str::uuid();
         });

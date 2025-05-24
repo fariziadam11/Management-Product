@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Audits
     Route::get('/audits', [AuditController::class, 'index'])->name('audits.index');
+    Route::get('/audits/export', [AuditController::class, 'export'])->name('audits.export');
     Route::get('/audits/{audit}', [AuditController::class, 'show'])->name('audits.show');
     Route::get('/audits/{type}/{id}', [AuditController::class, 'showForModel'])->name('audits.model');
 

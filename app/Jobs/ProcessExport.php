@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Exports\AuditExport;
 use App\Exports\CategoryExport;
 use App\Exports\ProductExport;
 use App\Exports\ProductReviewExport;
@@ -83,6 +84,8 @@ class ProcessExport implements ShouldQueue
                 $recordCount = \App\Models\Product::count();
             } elseif ($this->type === 'reviews') {
                 $recordCount = \App\Models\ProductReview::count();
+            } elseif ($this->type === 'audits') {
+                $recordCount = \App\Models\Audit::count();
             }
 
             // Create a database entry for the export
@@ -126,6 +129,8 @@ class ProcessExport implements ShouldQueue
                 return new ProductExport($this->fields);
             case 'reviews':
                 return new ProductReviewExport($this->fields);
+            case 'audits':
+                return new AuditExport($this->fields);
             default:
                 return null;
         }

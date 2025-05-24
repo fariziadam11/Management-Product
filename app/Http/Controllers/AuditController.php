@@ -13,6 +13,17 @@ use Illuminate\Http\Request;
 class AuditController extends Controller
 {
     /**
+     * Export audits to Excel.
+     *
+     * @return \Symfony\Component\HttpFoundation\BinaryFileResponse
+     */
+    public function export()
+    {
+        return \Maatwebsite\Excel\Facades\Excel::download(new \App\Exports\AuditExport([
+            'id', 'user_id', 'event', 'auditable_type', 'auditable_id', 'old_values', 'new_values', 'created_at'
+        ]), 'audits_' . date('Y-m-d') . '.xlsx');
+    }
+    /**
      * Display a listing of the audits.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -25,7 +36,9 @@ class AuditController extends Controller
         // Filter by auditable type
         if ($request->has('auditable_type') && $request->input('auditable_type') !== '') {
             $auditableType = $this->getAuditableType($request->input('auditable_type'));
-            $query->where('auditable_type', $auditableType);
+            if ($auditableType) {
+                $query->where('auditable_type', $auditableType);
+            }
         }
         
         // Filter by event type
@@ -125,18 +138,31 @@ class AuditController extends Controller
      */
     private function getAuditableType($type)
     {
+        if (!$type) {
+            return null;
+        }
+        
         switch ($type) {
+            case 'role':
             case 'roles':
                 return Role::class;
+            case 'user':
             case 'users':
                 return User::class;
+            case 'category':
             case 'categories':
                 return Category::class;
+            case 'product':
             case 'products':
                 return Product::class;
+            case 'product_review':
             case 'reviews':
                 return ProductReview::class;
             default:
+                // Check if it's a valid class name before returning
+                if (class_exists($type)) {
+                    return $type;
+                }
                 return null;
         }
     }

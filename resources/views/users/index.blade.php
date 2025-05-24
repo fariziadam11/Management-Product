@@ -31,7 +31,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="bi bi-search text-gray-400"></i>
                             </div>
-                            <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                            <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 id="search" name="search" placeholder="Search by name or email..." value="{{ request('search') }}">
                         </div>
                     </div>
@@ -77,17 +77,19 @@
             <h3 class="text-lg font-medium text-gray-900 flex items-center">
                 <i class="bi bi-people mr-2 text-blue-600"></i>
                 <span>Users</span>
-                <span class="ml-2 px-2 py-0.5 text-xs rounded-full bg-blue-100 text-blue-800">{{ $users->total() }}</span>
+                <span class="ml-2 text-sm text-gray-500">({{ $users->total() }})</span>
             </h3>
-            <div x-data="{ open: false }" class="relative">
-                <button @click="open = !open" class="text-gray-500 hover:text-gray-700 focus:outline-none p-1 rounded-full hover:bg-gray-100">
-                    <i class="bi bi-three-dots-vertical"></i>
-                </button>
-                <div x-show="open" @click.away="open = false" x-transition class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                    <a href="{{ route('export.users') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
-                        <i class="bi bi-file-earmark-excel text-green-600 mr-2"></i> Export to Excel
+            <div class="flex mt-2 sm:mt-0">
+                <div class="flex space-x-2">
+                    @if(auth()->user()->hasAnyRole('admin', 'manager', 'editor'))
+                    <a href="{{ route('users.create') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="bi bi-person-plus mr-1.5"></i> Create User
                     </a>
-                    <a href="{{ route('users.import.form') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center">
+                    @endif
+                    <a href="{{ route('export.form', ['type' => 'users']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <i class="bi bi-file-earmark-excel text-green-600 mr-2"></i> Export Users
+                    </a>
+                    <a href="{{ route('import.form', ['type' => 'users']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         <i class="bi bi-file-earmark-excel text-blue-600 mr-2"></i> Import Users
                     </a>
                 </div>
@@ -185,7 +187,7 @@
                                     <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="inline-block">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 p-1.5 rounded-md transition-colors duration-150" 
+                                        <button type="submit" class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 p-1.5 rounded-md transition-colors duration-150"
                                                 onclick="return confirm('Are you sure you want to delete this user?')">
                                             <i class="bi bi-trash"></i>
                                         </button>

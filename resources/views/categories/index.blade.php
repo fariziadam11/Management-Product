@@ -12,14 +12,27 @@
 <div class="space-y-6">
     <!-- Filters and Search -->
     <div x-data="{showFilters: true}" class="bg-white rounded-lg shadow-sm overflow-hidden">
-        <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-            <h3 class="text-lg font-medium text-gray-900 flex items-center">
-                <i class="bi bi-funnel mr-2 text-blue-600"></i>
-                <span>Filter Categories</span>
-            </h3>
-            <button @click="showFilters = !showFilters" class="text-gray-500 hover:text-gray-700 focus:outline-none">
-                <i class="bi" :class="showFilters ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
-            </button>
+        <div class="px-4 py-3 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
+            <div class="flex items-center justify-between w-full sm:w-auto">
+                <h3 class="text-lg font-medium text-gray-900 flex items-center">
+                    <i class="bi bi-funnel mr-2 text-blue-600"></i>
+                    <span>Filter Categories</span>
+                </h3>
+                <button @click="showFilters = !showFilters" class="text-gray-500 hover:text-gray-700 focus:outline-none sm:ml-2">
+                    <i class="bi" :class="showFilters ? 'bi-chevron-up' : 'bi-chevron-down'"></i>
+                </button>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('export.form', ['type' => 'categories']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-download mr-1.5"></i> Export
+                </a>
+                <a href="{{ route('import.form', ['type' => 'categories']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-upload mr-1.5"></i> Import
+                </a>
+                <a href="{{ route('categories.create') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-plus-circle mr-1.5"></i> Create
+                </a>
+            </div>
         </div>
         <div x-show="showFilters" x-transition class="px-4 py-4 bg-white">
             <form action="{{ route('categories.index') }}" method="GET" class="space-y-4 md:space-y-0">

@@ -4,16 +4,18 @@
 
 @section('content')
 <div class="w-full px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
-    <!-- Debug Information -->
-    <div class="bg-blue-100 p-4 mb-4 rounded-md">
-        <h3 class="font-semibold">Debug Information:</h3>
-        <p>Audit count: {{ isset($audits) ? $audits->count() : 'No audits variable' }}</p>
-        <p>Total results: {{ isset($audits) && method_exists($audits, 'total') ? $audits->total() : 'N/A' }}</p>
-    </div>
     <!-- Filters and Search -->
     <div class="bg-white rounded-lg shadow-md overflow-hidden mb-4 sm:mb-6">
-        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
+        <div class="px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
             <h3 class="text-lg font-semibold text-blue-600">Filter Audit Logs</h3>
+            <div class="flex items-center space-x-2">
+                <a href="{{ route('audits.export') }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-download mr-1.5"></i> Export
+                </a>
+                <a href="{{ route('import.form', ['type' => 'audits']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <i class="bi bi-upload mr-1.5"></i> Import
+                </a>
+            </div>
         </div>
         <div class="p-4 sm:p-6">
             <form action="{{ route('audits.index') }}" method="GET" class="mb-0">
@@ -33,11 +35,11 @@
                         <label for="auditable_type" class="block text-sm font-medium text-gray-700 mb-1">Model Type</label>
                         <select class="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50" id="auditable_type" name="auditable_type">
                             <option value="">All Types</option>
-                            <option value="App\Models\User" {{ request('auditable_type') == 'App\Models\User' ? 'selected' : '' }}>User</option>
-                            <option value="App\Models\Role" {{ request('auditable_type') == 'App\Models\Role' ? 'selected' : '' }}>Role</option>
-                            <option value="App\Models\Category" {{ request('auditable_type') == 'App\Models\Category' ? 'selected' : '' }}>Category</option>
-                            <option value="App\Models\Product" {{ request('auditable_type') == 'App\Models\Product' ? 'selected' : '' }}>Product</option>
-                            <option value="App\Models\ProductReview" {{ request('auditable_type') == 'App\Models\ProductReview' ? 'selected' : '' }}>Product Review</option>
+                            <option value="user" {{ request('auditable_type') == 'user' ? 'selected' : '' }}>User</option>
+                            <option value="role" {{ request('auditable_type') == 'role' ? 'selected' : '' }}>Role</option>
+                            <option value="category" {{ request('auditable_type') == 'category' ? 'selected' : '' }}>Category</option>
+                            <option value="product" {{ request('auditable_type') == 'product' ? 'selected' : '' }}>Product</option>
+                            <option value="product_review" {{ request('auditable_type') == 'product_review' ? 'selected' : '' }}>Product Review</option>
                         </select>
                     </div>
                     <div>
@@ -72,7 +74,7 @@
     <!-- Audit Logs Table -->
     <x-tailwind.card>
         <div class="overflow-x-auto -mx-4 sm:-mx-0">
-            <x-tailwind.table :headers="['Event', 'Model', 'User', 'Date', '']">
+            <x-tailwind.table :headers="$headers = ['Event', 'Model', 'User', 'Date', 'Actions']">
             @forelse($audits as $audit)
                 <tr>
                     <td class="px-3 sm:px-6 py-3 sm:py-4 whitespace-nowrap text-xs sm:text-sm font-medium">
