@@ -173,7 +173,7 @@ class ExportImportController extends Controller
     public function import(Request $request, $type)
     {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|file|mimes:xlsx,xls',
+            'import_file' => 'required|file|mimes:xlsx,xls',
             'fields' => 'required|array',
             'fields.*' => 'string',
         ]);
@@ -185,7 +185,7 @@ class ExportImportController extends Controller
         }
         
         $fields = $request->input('fields');
-        $file = $request->file('file');
+        $file = $request->file('import_file');
         $fileName = $type . '_import_' . time() . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs('imports', $fileName, 'public');
         
@@ -212,25 +212,89 @@ class ExportImportController extends Controller
     public function getSampleTemplate($type, $format)
     {
         $fields = $this->getFieldsForType($type);
-        $headers = array_values($fields);
+        $headers = array_keys($fields); // Use field keys as headers, not values
         $data = [];
         
-        // Add sample data based on type
+        // Add sample data based on type with correct column names
         if ($type === 'users') {
-            $data[] = ['John Doe', 'john@example.com', 1, 1, now()->format('Y-m-d H:i:s')];
-            $data[] = ['Jane Smith', 'jane@example.com', 2, 1, now()->format('Y-m-d H:i:s')];
+            $data[] = [
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                'role_id' => 1,
+                'is_active' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
+            $data[] = [
+                'name' => 'Jane Smith',
+                'email' => 'jane@example.com',
+                'role_id' => 2,
+                'is_active' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
         } elseif ($type === 'products') {
-            $data[] = ['Sample Product 1', 1, 19.99, 100, 'Description for product 1', 1, now()->format('Y-m-d H:i:s')];
-            $data[] = ['Sample Product 2', 2, 29.99, 50, 'Description for product 2', 0, now()->format('Y-m-d H:i:s')];
+            $data[] = [
+                'name' => 'Sample Product 1',
+                'category_id' => 'Electronics', // Use category name, not ID
+                'price' => 19.99,
+                'stock' => 100,
+                'description' => 'Description for product 1',
+                'is_featured' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
+            $data[] = [
+                'name' => 'Sample Product 2',
+                'category_id' => 'Clothing', // Use category name, not ID
+                'price' => 29.99,
+                'stock' => 50,
+                'description' => 'Description for product 2',
+                'is_featured' => 0,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
         } elseif ($type === 'categories') {
-            $data[] = ['Electronics', 'Electronic products', 1, now()->format('Y-m-d H:i:s')];
-            $data[] = ['Clothing', 'Clothing products', 1, now()->format('Y-m-d H:i:s')];
+            $data[] = [
+                'name' => 'Electronics',
+                'description' => 'Electronic products',
+                'is_active' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
+            $data[] = [
+                'name' => 'Clothing',
+                'description' => 'Clothing products',
+                'is_active' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
         } elseif ($type === 'reviews') {
-            $data[] = [1, 1, 5, 'Great product!', 'This product exceeded my expectations.', 'John Doe', 'john@example.com', 'approved', now()->format('Y-m-d H:i:s')];
-            $data[] = [2, 2, 4, 'Good value', 'Good product for the price.', 'Jane Smith', 'jane@example.com', 'approved', now()->format('Y-m-d H:i:s')];
+            $data[] = [
+                'product_id' => 'Sample Product 1', // Use product name, not ID
+                'user_id' => 'john@example.com', // Use email, not ID
+                'rating' => 5,
+                'title' => 'Great product!',
+                'content' => 'This product exceeded my expectations.',
+                'is_verified' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
+            $data[] = [
+                'product_id' => 'Sample Product 2', // Use product name, not ID
+                'user_id' => 'jane@example.com', // Use email, not ID
+                'rating' => 4,
+                'title' => 'Good value',
+                'content' => 'Good product for the price.',
+                'is_verified' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
         } elseif ($type === 'roles') {
-            $data[] = ['Administrator', 'Full access to all features', 1, now()->format('Y-m-d H:i:s')];
-            $data[] = ['Editor', 'Can edit content but not settings', 1, now()->format('Y-m-d H:i:s')];
+            $data[] = [
+                'name' => 'Administrator',
+                'description' => 'Full access to all features',
+                'is_active' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
+            $data[] = [
+                'name' => 'Editor',
+                'description' => 'Can edit content but not settings',
+                'is_active' => 1,
+                'created_at' => now()->format('Y-m-d H:i:s')
+            ];
         }
         
         // Create a temporary file
@@ -247,7 +311,11 @@ class ExportImportController extends Controller
             $file = fopen($tempFile, 'w');
             fputcsv($file, $headers);
             foreach ($data as $row) {
-                fputcsv($file, $row);
+                $orderedRow = [];
+                foreach ($headers as $header) {
+                    $orderedRow[] = $row[$header] ?? '';
+                }
+                fputcsv($file, $orderedRow);
             }
             fclose($file);
         } elseif ($format === 'xlsx') {
@@ -261,8 +329,11 @@ class ExportImportController extends Controller
             
             // Add data
             foreach ($data as $rowIndex => $rowData) {
-                foreach ($rowData as $colIndex => $value) {
+                $colIndex = 0;
+                foreach ($headers as $header) {
+                    $value = $rowData[$header] ?? '';
                     $sheet->setCellValueByColumnAndRow($colIndex + 1, $rowIndex + 2, $value);
+                    $colIndex++;
                 }
             }
             

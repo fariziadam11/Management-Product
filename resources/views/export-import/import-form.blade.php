@@ -19,6 +19,36 @@
                     <form action="{{ route('import.process', ['type' => $type]) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="type" value="{{ $type }}">
+                        
+                        <!-- Hidden fields for import -->
+                        @if($type == 'users')
+                            <input type="hidden" name="fields[]" value="name">
+                            <input type="hidden" name="fields[]" value="email">
+                            <input type="hidden" name="fields[]" value="role_id">
+                            <input type="hidden" name="fields[]" value="is_active">
+                        @elseif($type == 'products')
+                            <input type="hidden" name="fields[]" value="name">
+                            <input type="hidden" name="fields[]" value="category_id">
+                            <input type="hidden" name="fields[]" value="price">
+                            <input type="hidden" name="fields[]" value="stock">
+                            <input type="hidden" name="fields[]" value="description">
+                            <input type="hidden" name="fields[]" value="is_featured">
+                        @elseif($type == 'categories')
+                            <input type="hidden" name="fields[]" value="name">
+                            <input type="hidden" name="fields[]" value="description">
+                            <input type="hidden" name="fields[]" value="is_active">
+                        @elseif($type == 'reviews')
+                            <input type="hidden" name="fields[]" value="product_id">
+                            <input type="hidden" name="fields[]" value="user_id">
+                            <input type="hidden" name="fields[]" value="rating">
+                            <input type="hidden" name="fields[]" value="title">
+                            <input type="hidden" name="fields[]" value="content">
+                            <input type="hidden" name="fields[]" value="is_verified">
+                        @elseif($type == 'roles')
+                            <input type="hidden" name="fields[]" value="name">
+                            <input type="hidden" name="fields[]" value="description">
+                            <input type="hidden" name="fields[]" value="is_active">
+                        @endif
 
                         <!-- Upload File -->
                         <div class="mb-4 sm:mb-6">
