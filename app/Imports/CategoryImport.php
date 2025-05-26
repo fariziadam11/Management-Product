@@ -36,7 +36,7 @@ class CategoryImport implements ToCollection, WithHeadingRow
     {
         foreach ($rows as $row) {
             $categoryData = [];
-            
+
             // Map fields from Excel to model
             foreach ($this->fields as $field) {
                 switch ($field) {
@@ -66,12 +66,12 @@ class CategoryImport implements ToCollection, WithHeadingRow
                         break;
                 }
             }
-            
+
             // Only proceed if we have a name
             if (!empty($categoryData['name'])) {
                 // Check if category exists by name
                 $category = Category::where('name', $categoryData['name'])->first();
-                
+
                 if ($category) {
                     // Update existing category
                     $category->update($categoryData);
@@ -83,7 +83,7 @@ class CategoryImport implements ToCollection, WithHeadingRow
             }
         }
     }
-    
+
     /**
      * Get the column name from the Excel file.
      *
@@ -104,7 +104,7 @@ class CategoryImport implements ToCollection, WithHeadingRow
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
         ];
-        
+
         return $columnMap[$field] ?? $field;
     }
 }

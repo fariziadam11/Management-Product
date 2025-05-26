@@ -37,7 +37,7 @@ class ProductImport implements ToCollection, WithHeadingRow
     {
         foreach ($rows as $row) {
             $productData = [];
-            
+
             // Map fields from Excel to model
             foreach ($this->fields as $field) {
                 switch ($field) {
@@ -78,14 +78,14 @@ class ProductImport implements ToCollection, WithHeadingRow
                         break;
                 }
             }
-            
+
             // Only proceed if we have a name and category_id
             if (!empty($productData['name']) && !empty($productData['category_id'])) {
                 // Check if product exists by name and category
                 $product = Product::where('name', $productData['name'])
                                 ->where('category_id', $productData['category_id'])
                                 ->first();
-                
+
                 if ($product) {
                     // Update existing product
                     $product->update($productData);
@@ -97,7 +97,7 @@ class ProductImport implements ToCollection, WithHeadingRow
             }
         }
     }
-    
+
     /**
      * Get the column name from the Excel file.
      *
@@ -121,7 +121,7 @@ class ProductImport implements ToCollection, WithHeadingRow
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
         ];
-        
+
         return $columnMap[$field] ?? $field;
     }
 }

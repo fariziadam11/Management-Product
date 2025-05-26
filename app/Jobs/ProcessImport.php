@@ -67,11 +67,11 @@ class ProcessImport implements ShouldQueue
 
         if ($import) {
             Excel::import($import, storage_path('app/public/' . $this->filePath));
-            
+
             // Here you would typically send a notification to the user
             // that their import has been completed
             // Notification::send(auth()->user(), new ImportCompleted($this->type));
-            
+
             // Clean up the imported file
             Storage::disk('public')->delete($this->filePath);
         }

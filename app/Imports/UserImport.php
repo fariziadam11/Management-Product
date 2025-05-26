@@ -38,7 +38,7 @@ class UserImport implements ToCollection, WithHeadingRow
     {
         foreach ($rows as $row) {
             $userData = [];
-            
+
             // Map fields from Excel to model
             foreach ($this->fields as $field) {
                 switch ($field) {
@@ -71,12 +71,12 @@ class UserImport implements ToCollection, WithHeadingRow
                         break;
                 }
             }
-            
+
             // Only proceed if we have an email
             if (!empty($userData['email'])) {
                 // Check if user exists by email
                 $user = User::where('email', $userData['email'])->first();
-                
+
                 if ($user) {
                     // Update existing user
                     $user->update($userData);
@@ -89,7 +89,7 @@ class UserImport implements ToCollection, WithHeadingRow
             }
         }
     }
-    
+
     /**
      * Get the column name from the Excel file.
      *
@@ -110,7 +110,7 @@ class UserImport implements ToCollection, WithHeadingRow
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
         ];
-        
+
         return $columnMap[$field] ?? $field;
     }
 }

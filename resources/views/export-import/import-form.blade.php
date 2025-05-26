@@ -19,7 +19,7 @@
                     <form action="{{ route('import.process', ['type' => $type]) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <input type="hidden" name="type" value="{{ $type }}">
-                        
+
                         <!-- Hidden fields for import -->
                         @if($type == 'users')
                             <input type="hidden" name="fields[]" value="name">

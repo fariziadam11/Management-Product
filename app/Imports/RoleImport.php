@@ -36,7 +36,7 @@ class RoleImport implements ToCollection, WithHeadingRow
     {
         foreach ($rows as $row) {
             $roleData = [];
-            
+
             // Map fields from Excel to model
             foreach ($this->fields as $field) {
                 switch ($field) {
@@ -66,12 +66,12 @@ class RoleImport implements ToCollection, WithHeadingRow
                         break;
                 }
             }
-            
+
             // Only proceed if we have a name
             if (!empty($roleData['name'])) {
                 // Check if role exists by name
                 $role = Role::where('name', $roleData['name'])->first();
-                
+
                 if ($role) {
                     // Update existing role
                     $role->update($roleData);
@@ -83,7 +83,7 @@ class RoleImport implements ToCollection, WithHeadingRow
             }
         }
     }
-    
+
     /**
      * Get the column name from the Excel file.
      *
@@ -104,7 +104,7 @@ class RoleImport implements ToCollection, WithHeadingRow
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
         ];
-        
+
         return $columnMap[$field] ?? $field;
     }
 }

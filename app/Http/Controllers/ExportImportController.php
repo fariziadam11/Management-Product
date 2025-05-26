@@ -36,13 +36,13 @@ class ExportImportController extends Controller
     public function showExportForm($type)
     {
         $fields = $this->getFieldsForType($type);
-        
+
         // Get previous exports for this type
         $previousExports = \App\Models\Export::where('type', $type)
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
-        
+
         if ($type === 'products') {
             $categories = Category::where('is_active', true)->get();
             return view('export-import.export-form', compact('type', 'fields', 'categories', 'previousExports'));
@@ -60,10 +60,10 @@ class ExportImportController extends Controller
             $users = User::all();
             return view('export-import.export-form', compact('type', 'fields', 'users', 'previousExports'));
         }
-        
+
         return view('export-import.export-form', compact('type', 'fields', 'previousExports'));
     }
-    
+
     /**
      * Process the export request.
      *
@@ -77,17 +77,17 @@ class ExportImportController extends Controller
             'fields' => 'required|array',
             'fields.*' => 'string',
         ]);
-        
+
         if ($validator->fails()) {
             return redirect()->route('export.form', $type)
                 ->withErrors($validator)
                 ->withInput();
         }
-        
+
         $fields = $request->input('fields');
         $fileName = $type . '_export_' . Str::random(10) . '.xlsx';
         $filePath = 'exports/' . $fileName;
-        
+
         // For immediate export (not using queue)
         if ($type === 'audits') {
             // Create export record
@@ -101,21 +101,21 @@ class ExportImportController extends Controller
                 'format' => 'xlsx'
             ]);
             $export->save();
-            
+
             // Generate export file
             Excel::store(new \App\Exports\AuditExport($fields), 'public/' . $filePath);
-            
+
             return redirect()->route('export.download', $fileName)
                 ->with('success', 'Your export has been generated successfully.');
         } else {
             // Dispatch export job to queue for other types
             ProcessExport::dispatch($type, $fields, $filePath);
-            
+
             return redirect()->route('dashboard')
                 ->with('success', 'Export is being processed in the background. You will be notified when it is ready for download.');
         }
     }
-    
+
     /**
      * Download the exported file.
      *
@@ -125,14 +125,14 @@ class ExportImportController extends Controller
     public function download($fileName)
     {
         $path = storage_path('app/public/exports/' . $fileName);
-        
+
         if (!file_exists($path)) {
             abort(404, 'File not found');
         }
-        
+
         return response()->download($path);
     }
-    
+
     /**
      * Show the import form.
      *
@@ -142,10 +142,10 @@ class ExportImportController extends Controller
     public function showImportForm($type)
     {
         $fields = $this->getFieldsForType($type);
-        
+
         // Get related data based on type
         $previousImports = [];
-        
+
         if ($type === 'products') {
             $categories = Category::where('is_active', true)->get();
             return view('export-import.import-form', compact('type', 'fields', 'categories', 'previousImports'));
@@ -159,10 +159,10 @@ class ExportImportController extends Controller
             $categories = Category::where('is_active', true)->get();
             return view('export-import.import-form', compact('type', 'fields', 'categories', 'previousImports'));
         }
-        
+
         return view('export-import.import-form', compact('type', 'fields', 'previousImports'));
     }
-    
+
     /**
      * Process the import request.
      *
@@ -177,25 +177,25 @@ class ExportImportController extends Controller
             'fields' => 'required|array',
             'fields.*' => 'string',
         ]);
-        
+
         if ($validator->fails()) {
             return redirect()->route('import.form', $type)
                 ->withErrors($validator)
                 ->withInput();
         }
-        
+
         $fields = $request->input('fields');
         $file = $request->file('import_file');
         $fileName = $type . '_import_' . time() . '.' . $file->getClientOriginalExtension();
         $filePath = $file->storeAs('imports', $fileName, 'public');
-        
+
         // Dispatch import job to queue
         ProcessImport::dispatch($type, $fields, $filePath);
-        
+
         return redirect()->route('dashboard')
             ->with('success', 'Import is being processed in the background. You will be notified when it is completed.');
     }
-    
+
     /**
      * Get the fields for a specific type.
      *
@@ -214,7 +214,7 @@ class ExportImportController extends Controller
         $fields = $this->getFieldsForType($type);
         $headers = array_keys($fields); // Use field keys as headers, not values
         $data = [];
-        
+
         // Add sample data based on type with correct column names
         if ($type === 'users') {
             $data[] = [
@@ -296,16 +296,16 @@ class ExportImportController extends Controller
                 'created_at' => now()->format('Y-m-d H:i:s')
             ];
         }
-        
+
         // Create a temporary file
         $fileName = $type . '_template.' . $format;
         $tempFile = storage_path('app/public/exports/' . $fileName);
-        
+
         // Ensure the directory exists
         if (!file_exists(dirname($tempFile))) {
             mkdir(dirname($tempFile), 0755, true);
         }
-        
+
         // Generate the file based on format
         if ($format === 'csv') {
             $file = fopen($tempFile, 'w');
@@ -321,12 +321,12 @@ class ExportImportController extends Controller
         } elseif ($format === 'xlsx') {
             $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            
+
             // Add headers
             foreach ($headers as $colIndex => $header) {
                 $sheet->setCellValueByColumnAndRow($colIndex + 1, 1, $header);
             }
-            
+
             // Add data
             foreach ($data as $rowIndex => $rowData) {
                 $colIndex = 0;
@@ -336,14 +336,14 @@ class ExportImportController extends Controller
                     $colIndex++;
                 }
             }
-            
+
             $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
             $writer->save($tempFile);
         }
-        
+
         return response()->download($tempFile, $fileName)->deleteFileAfterSend(true);
     }
-    
+
     /**
      * Download the import error log.
      *
@@ -355,12 +355,12 @@ class ExportImportController extends Controller
         // In a real application, you would fetch the import log from the database
         // For this example, we'll create a sample error log file
         $logFile = storage_path('app/public/imports/logs/import_' . $id . '_errors.csv');
-        
+
         // Ensure the directory exists
         if (!file_exists(dirname($logFile))) {
             mkdir(dirname($logFile), 0755, true);
         }
-        
+
         // Create a sample error log if it doesn't exist
         if (!file_exists($logFile)) {
             $file = fopen($logFile, 'w');
@@ -369,7 +369,7 @@ class ExportImportController extends Controller
             fputcsv($file, [3, 'price', 'The price must be a number.']);
             fclose($file);
         }
-        
+
         return response()->download($logFile, 'import_errors.csv');
     }
 

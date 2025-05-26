@@ -38,7 +38,7 @@ class ProductReviewImport implements ToCollection, WithHeadingRow
     {
         foreach ($rows as $row) {
             $reviewData = [];
-            
+
             // Map fields from Excel to model
             foreach ($this->fields as $field) {
                 switch ($field) {
@@ -87,7 +87,7 @@ class ProductReviewImport implements ToCollection, WithHeadingRow
                         break;
                 }
             }
-            
+
             // Only proceed if we have a title, product_id, and user_id
             if (!empty($reviewData['title']) && !empty($reviewData['product_id']) && !empty($reviewData['user_id'])) {
                 // Check if review exists by title, product_id, and user_id
@@ -95,7 +95,7 @@ class ProductReviewImport implements ToCollection, WithHeadingRow
                                      ->where('product_id', $reviewData['product_id'])
                                      ->where('user_id', $reviewData['user_id'])
                                      ->first();
-                
+
                 if ($review) {
                     // Update existing review
                     $review->update($reviewData);
@@ -107,7 +107,7 @@ class ProductReviewImport implements ToCollection, WithHeadingRow
             }
         }
     }
-    
+
     /**
      * Get the column name from the Excel file.
      *
@@ -131,7 +131,7 @@ class ProductReviewImport implements ToCollection, WithHeadingRow
             'created_at' => 'created_at',
             'updated_at' => 'updated_at',
         ];
-        
+
         return $columnMap[$field] ?? $field;
     }
 }
