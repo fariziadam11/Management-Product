@@ -20,10 +20,12 @@ class Product extends Model implements Auditable
     protected $fillable = [
         'uuid',
         'category_id',
+        'sku',
         'name',
         'description',
         'price',
         'stock',
+        'status',
         'is_featured',
         'specifications',
         'document',
@@ -41,9 +43,30 @@ class Product extends Model implements Auditable
         'price' => 'decimal:2',
         'stock' => 'integer',
         'is_featured' => 'boolean',
+        'status' => 'string',
         'specifications' => 'json',
         'available_from' => 'datetime',
     ];
+
+    /**
+     * Boot the model.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($model) {
+            // Generate UUID jika belum ada
+            if (empty($model->uuid)) {
+                $model->uuid = (string) \Illuminate\Support\Str::uuid();
+            }
+            
+            // Generate SKU otomatis jika tidak diisi
+            if (empty($model->sku)) {
+                $model->sku = 'SKU-' . strtoupper(uniqid());
+            }
+        });
+    }
     
     /**
      * Get the category that owns the product.
@@ -59,17 +82,5 @@ class Product extends Model implements Auditable
     public function reviews()
     {
         return $this->hasMany(ProductReview::class);
-    }
-    
-    /**
-     * Boot the model.
-     */
-    protected static function boot()
-    {
-        parent::boot();
-        
-        static::creating(function ($model) {
-            $model->uuid = (string) \Illuminate\Support\Str::uuid();
-        });
     }
 }

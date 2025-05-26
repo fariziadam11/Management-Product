@@ -51,19 +51,10 @@
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
-
-                        <div>
-                            <label for="sku" class="block text-sm font-medium text-gray-700">SKU</label>
-                            <input type="text" id="sku" name="sku" value="{{ old('sku') }}"
-                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('sku') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
-                            @error('sku')
-                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
-                            @enderror
-                        </div>
                     </div>
 
-                    <!-- Price and Stock -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Price, Stock, and Status -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label for="price" class="block text-sm font-medium text-gray-700">Price ($) <span class="text-red-500">*</span></label>
                             <input type="number" step="0.01" min="0" id="price" name="price" value="{{ old('price') }}" required
@@ -78,6 +69,19 @@
                             <input type="number" min="0" id="stock" name="stock" value="{{ old('stock', 0) }}" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('stock') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
                             @error('stock')
+                                <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="status" class="block text-sm font-medium text-gray-700">Status <span class="text-red-500">*</span></label>
+                            <select id="status" name="status" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm @error('status') border-red-300 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500 @enderror">
+                                <option value="draft" {{ old('status', 'draft') === 'draft' ? 'selected' : '' }}>Draft</option>
+                                <option value="active" {{ old('status') === 'active' ? 'selected' : '' }}>Active</option>
+                                <option value="inactive" {{ old('status') === 'inactive' ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                            @error('status')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -119,7 +123,7 @@
 
                     <!-- PDF Upload -->
                     <div>
-                        <label for="document" class="block text-sm font-medium text-gray-700">Product Documentation (PDF, DOC, DOCX)</label>
+                        <label for="document" class="block text-sm font-medium text-gray-700">Product Documentation</label>
                         <div class="mt-1 flex items-center">
                             <label for="document" class="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 <span>Choose file</span>
@@ -131,22 +135,6 @@
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
-
-                    <!-- Status -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Status</label>
-                        <div class="mt-2 space-x-4">
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="is_active" value="1" {{ old('is_active', '1') == '1' ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                                <span class="ml-2 text-sm text-gray-700">Active</span>
-                            </label>
-                            <label class="inline-flex items-center">
-                                <input type="radio" name="is_active" value="0" {{ old('is_active') == '0' ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300">
-                                <span class="ml-2 text-sm text-gray-700">Inactive</span>
-                            </label>
-                        </div>
-                    </div>
-
                     <!-- Featured -->
                     <div class="flex items-center">
                         <input id="is_featured" name="is_featured" type="checkbox" value="1" {{ old('is_featured') ? 'checked' : '' }} class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
@@ -217,13 +205,13 @@
                 const file = e.target.files[0];
                 if (file) {
                     const reader = new FileReader();
-                    
+
                     reader.onload = function(event) {
                         imagePreviewImg.src = event.target.result;
                         imagePreviewImg.classList.remove('hidden');
                         imagePlaceholder.classList.add('hidden');
                     };
-                    
+
                     reader.readAsDataURL(file);
                 }
             });
@@ -259,20 +247,20 @@
             function handleDrop(e) {
                 const dt = e.dataTransfer;
                 const files = dt.files;
-                
+
                 if (files.length) {
                     imageInput.files = files;
-                    
+
                     const file = files[0];
                     if (file && file.type.match('image.*')) {
                         const reader = new FileReader();
-                        
+
                         reader.onload = function(event) {
                             imagePreviewImg.src = event.target.result;
                             imagePreviewImg.classList.remove('hidden');
                             imagePlaceholder.classList.add('hidden');
                         };
-                        
+
                         reader.readAsDataURL(file);
                     }
                 }
@@ -282,7 +270,7 @@
         // Document file name display
         const documentInput = document.getElementById('document');
         const documentFileName = document.getElementById('documentFileName');
-        
+
         if (documentInput && documentFileName) {
             documentInput.addEventListener('change', function() {
                 if (this.files && this.files.length > 0) {

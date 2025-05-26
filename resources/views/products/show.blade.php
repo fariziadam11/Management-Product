@@ -195,10 +195,10 @@
 
             <!-- Documents Tab -->
             <div x-show="activeTab === 'documents'" style="display: none;">
-                @if($product->pdf_path)
+                @if($product->document)
                     <div class="bg-gray-50 p-4 rounded-lg">
                         <h3 class="text-lg font-medium text-gray-900 mb-3">Product Documentation</h3>
-                        <a href="{{ asset('storage/' . $product->pdf_path) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" target="_blank">
+                        <a href="{{ asset('storage/' . $product->document) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" target="_blank">
                             <i class="bi bi-file-earmark-pdf mr-2"></i> View PDF
                         </a>
                     </div>

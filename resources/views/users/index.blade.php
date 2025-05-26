@@ -89,9 +89,6 @@
                     <a href="{{ route('export.form', ['type' => 'users']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         <i class="bi bi-file-earmark-excel text-green-600 mr-2"></i> Export Users
                     </a>
-                    <a href="{{ route('import.form', ['type' => 'users']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                        <i class="bi bi-file-earmark-excel text-blue-600 mr-2"></i> Import Users
-                    </a>
                 </div>
             </div>
         </div>

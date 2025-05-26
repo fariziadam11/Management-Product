@@ -12,9 +12,6 @@
                 <a href="{{ route('audits.export') }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     <i class="bi bi-download mr-1.5"></i> Export
                 </a>
-                <a href="{{ route('import.form', ['type' => 'audits']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    <i class="bi bi-upload mr-1.5"></i> Import
-                </a>
             </div>
         </div>
         <div class="p-4 sm:p-6">

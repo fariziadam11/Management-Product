@@ -29,9 +29,11 @@
                 <a href="{{ route('import.form', ['type' => 'categories']) }}" class="inline-flex items-center px-3 py-1.5 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     <i class="bi bi-upload mr-1.5"></i> Import
                 </a>
+                @if(auth()->user()->hasRole('admin'))
                 <a href="{{ route('categories.create') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                     <i class="bi bi-plus-circle mr-1.5"></i> Create
                 </a>
+                @endif
             </div>
         </div>
         <div x-show="showFilters" x-transition class="px-4 py-4 bg-white">
@@ -42,7 +44,7 @@
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="bi bi-search text-gray-400"></i>
                             </div>
-                            <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" 
+                            <input type="text" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                                 id="search" name="search" placeholder="Search categories..." value="{{ request('search') }}">
                         </div>
                     </div>
@@ -78,7 +80,12 @@
             @foreach($categories as $category)
                 <div class="bg-white rounded-lg shadow-sm overflow-hidden transition-all duration-200 hover:shadow-md">
                     <div class="px-4 py-3 border-b border-gray-200 flex justify-between items-center">
-                        <h3 class="text-lg font-medium text-gray-900 truncate">{{ $category->name }}</h3>
+                        <div class="flex items-center">
+                            <h3 class="text-lg font-medium text-gray-900 truncate">{{ $category->name }}</h3>
+                            <span class="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $category->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                                {{ $category->is_active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </div>
                         <div x-data="{ open: false }" class="relative">
                             <button @click="open = !open" class="text-gray-500 hover:text-gray-700 focus:outline-none p-1 rounded-full hover:bg-gray-100">
                                 <i class="bi bi-three-dots-vertical"></i>
@@ -94,7 +101,7 @@
                                 <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="block">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center" 
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
                                             onclick="return confirm('Are you sure you want to delete this category?')">
                                         <i class="bi bi-trash mr-2"></i> Delete
                                     </button>
@@ -104,15 +111,10 @@
                     </div>
                     <div class="p-4">
                         <div class="flex flex-col space-y-3">
-                            <div class="flex items-center">
-                                <x-tailwind.badge variant="{{ $category->active ? 'success' : 'danger' }}" size="sm">
-                                    {{ $category->active ? 'Active' : 'Inactive' }}
-                                </x-tailwind.badge>
-                            </div>
-                            <div class="flex items-center mt-2">
-                                <div class="flex items-center text-sm text-gray-700">
+                            <div class="flex items-center mt-4">
+                                <div class="flex items-center text-xs text-gray-500">
                                     <i class="bi bi-box mr-2 text-blue-500"></i>
-                                    <span class="font-medium">{{ $category->products_count ?? 0 }}</span> Products
+                                    <span class="font-medium text-xs justify-center w-5">{{ $category->products_count ?? 0 }}</span> Products
                                 </div>
                             </div>
                             <div class="mt-2 text-sm text-gray-600 line-clamp-2">
@@ -139,9 +141,11 @@
                         <i class="bi bi-folder-plus text-4xl mb-3 text-blue-400"></i>
                         <p class="text-lg font-medium">No categories found</p>
                         <p class="text-sm mt-1 mb-3">Start organizing your products by creating categories</p>
+                        @if(auth()->user()->hasRole('admin'))
                         <a href="{{ route('categories.create') }}" class="mt-2 inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             <i class="bi bi-plus-circle mr-2"></i> Create your first category
                         </a>
+                        @endif
                     </div>
                 </div>
             </div>
