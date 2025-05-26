@@ -27,6 +27,7 @@ class Product extends Model implements Auditable
         'is_featured',
         'specifications',
         'document',
+        'image',
         'available_from',
     ];
     

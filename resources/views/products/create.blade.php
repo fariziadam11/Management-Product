@@ -101,13 +101,13 @@
                         <label class="block text-sm font-medium text-gray-700">Product Image</label>
                         <div class="mt-1 relative">
                             <div id="imagePreview" class="group relative h-48 w-full rounded-md border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden cursor-pointer hover:border-blue-400 transition duration-150">
-                                <img src="{{ asset('images/placeholder.png') }}" alt="Image Preview" class="absolute inset-0 w-full h-full object-cover hidden">
+                                <img id="imagePreviewImg" src="{{ asset('images/placeholder.png') }}" alt="Image Preview" class="absolute inset-0 w-full h-full object-cover hidden">
                                 <div id="imagePlaceholder" class="text-center p-4">
                                     <svg class="mx-auto h-12 w-12 text-gray-400 group-hover:text-blue-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
                                         <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                     </svg>
                                     <p class="mt-2 text-sm text-gray-600 group-hover:text-blue-500">Click or drag to upload</p>
-                                    <p class="mt-1 text-xs text-gray-500">PNG, JPG up to 2MB</p>
+                                    <p class="mt-1 text-xs text-gray-500">PNG, JPG, JPEG, GIF, SVG up to 2MB</p>
                                 </div>
                             </div>
                             <input type="file" id="image" name="image" accept="image/*" class="sr-only">
@@ -119,15 +119,15 @@
 
                     <!-- PDF Upload -->
                     <div>
-                        <label for="pdf_path" class="block text-sm font-medium text-gray-700">Product Documentation (PDF)</label>
+                        <label for="document" class="block text-sm font-medium text-gray-700">Product Documentation (PDF, DOC, DOCX)</label>
                         <div class="mt-1 flex items-center">
-                            <label for="pdf_path" class="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <label for="document" class="cursor-pointer bg-white py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm leading-4 font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 <span>Choose file</span>
-                                <input id="pdf_path" name="pdf_path" type="file" accept=".pdf" class="sr-only">
+                                <input id="document" name="document" type="file" accept=".pdf,.doc,.docx" class="sr-only">
                             </label>
-                            <span id="pdfFileName" class="ml-2 text-sm text-gray-500">No file chosen</span>
+                            <span id="documentFileName" class="ml-2 text-sm text-gray-500">No file chosen</span>
                         </div>
-                        @error('pdf_path')
+                        @error('document')
                             <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                         @enderror
                     </div>
@@ -200,36 +200,98 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Image preview
+        // Image preview functionality
         const imageInput = document.getElementById('image');
-        const imagePreview = document.getElementById('imagePreview').querySelector('img');
+        const imagePreview = document.getElementById('imagePreview');
+        const imagePreviewImg = document.getElementById('imagePreviewImg');
         const imagePlaceholder = document.getElementById('imagePlaceholder');
 
-        imageInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
+        if (imageInput && imagePreview) {
+            // Handle click on preview area
+            imagePreview.addEventListener('click', function() {
+                imageInput.click();
+            });
 
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.remove('hidden');
-                    imagePlaceholder.classList.add('hidden');
+            // Handle file selection
+            imageInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(event) {
+                        imagePreviewImg.src = event.target.result;
+                        imagePreviewImg.classList.remove('hidden');
+                        imagePlaceholder.classList.add('hidden');
+                    };
+                    
+                    reader.readAsDataURL(file);
                 }
+            });
 
-                reader.readAsDataURL(this.files[0]);
+            // Handle drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                imagePreview.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
             }
-        });
 
-        // PDF file name display
-        const pdfInput = document.getElementById('pdf_path');
-        const pdfFileName = document.getElementById('pdfFileName');
-
-        pdfInput.addEventListener('change', function() {
-            if (this.files && this.files[0]) {
-                pdfFileName.textContent = this.files[0].name;
-            } else {
-                pdfFileName.textContent = 'No file chosen';
+            function highlight() {
+                imagePreview.classList.add('border-blue-500');
             }
-        });
+
+            function unhighlight() {
+                imagePreview.classList.remove('border-blue-500');
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                imagePreview.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                imagePreview.addEventListener(eventName, unhighlight, false);
+            });
+
+            imagePreview.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length) {
+                    imageInput.files = files;
+                    
+                    const file = files[0];
+                    if (file && file.type.match('image.*')) {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(event) {
+                            imagePreviewImg.src = event.target.result;
+                            imagePreviewImg.classList.remove('hidden');
+                            imagePlaceholder.classList.add('hidden');
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    }
+                }
+            }
+        }
+
+        // Document file name display
+        const documentInput = document.getElementById('document');
+        const documentFileName = document.getElementById('documentFileName');
+        
+        if (documentInput && documentFileName) {
+            documentInput.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) {
+                    documentFileName.textContent = this.files[0].name;
+                } else {
+                    documentFileName.textContent = 'No file chosen';
+                }
+            });
+        }
 
         // Add specification row
         document.getElementById('add-specification').addEventListener('click', function() {

@@ -192,12 +192,6 @@
                     </svg>
                     Export
                 </a>
-                <a href="{{ route('import.form', ['type' => 'reviews']) }}" class="inline-flex items-center px-3 py-1.5 border border-green-600 text-sm font-medium rounded-lg text-green-600 hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                    </svg>
-                    Import
-                </a>
             </div>
         </div>
 

@@ -99,7 +99,7 @@
 
     <!-- Products Table -->
     <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-    
+
     <div class="overflow-x-auto">
         <div class="inline-block min-w-full align-middle">
     <!-- Desktop view (md and above) -->
@@ -226,7 +226,7 @@
                                 <form action="{{ route('products.destroy', $product) }}" method="POST" class="block">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center" 
+                                    <button type="submit" class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 flex items-center"
                                             onclick="return confirm('Are you sure you want to delete this product?')">
                                         <i class="bi bi-trash mr-2"></i> Delete
                                     </button>
