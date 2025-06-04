@@ -15,7 +15,6 @@ const UICore = (function() {
 
     // Initialize all UI components
     function init() {
-        initSidebar();
         initDropdowns();
         initModals();
         initAlerts();
@@ -23,19 +22,6 @@ const UICore = (function() {
         
         // Dispatch event to notify initialization is complete
         document.dispatchEvent(new CustomEvent('ui-initialized'));
-    }
-
-    // Sidebar functionality
-    function initSidebar() {
-        const sidebarToggle = document.getElementById('sidebarToggleTop');
-        const sidebar = document.getElementById('sidebarMenu');
-
-        if (sidebarToggle && sidebar) {
-            sidebarToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('hidden');
-                sidebar.classList.toggle('md:flex');
-            });
-        }
     }
 
     // Dropdown functionality - compatible with both Bootstrap and Alpine.js

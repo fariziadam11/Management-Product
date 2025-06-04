@@ -234,7 +234,7 @@ class ExportImportController extends Controller
         } elseif ($type === 'products') {
             $data[] = [
                 'name' => 'Sample Product 1',
-                'category_id' => 'Electronics', // Use category name, not ID
+                'category' => 'Electronics', // Use category name, not ID
                 'price' => 19.99,
                 'stock' => 100,
                 'description' => 'Description for product 1',
@@ -243,7 +243,7 @@ class ExportImportController extends Controller
             ];
             $data[] = [
                 'name' => 'Sample Product 2',
-                'category_id' => 'Clothing', // Use category name, not ID
+                'category' => 'Clothing', // Use category name, not ID
                 'price' => 29.99,
                 'stock' => 50,
                 'description' => 'Description for product 2',

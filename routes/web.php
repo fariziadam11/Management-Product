@@ -46,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
 
     // Products
     Route::resource('products', ProductController::class);
+    Route::post('products/import', [ProductController::class, 'import'])->name('products.import');
 
     // Product Reviews
     Route::resource('reviews', ProductReviewController::class);

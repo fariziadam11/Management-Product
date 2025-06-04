@@ -1,7 +1,10 @@
 <!-- Sidebar -->
 <div
-     :class="{ 'translate-x-0': $store.app.sidebarOpen, '-translate-x-full': !$store.app.sidebarOpen }"
-     class="fixed top-0 left-0 z-40 w-64 flex flex-col transform transition-transform duration-300 ease-in-out md:translate-x-0 bg-gradient-to-b from-blue-800 to-blue-900 h-screen overflow-hidden pt-16">
+     :class="{
+        'translate-x-0': ($store.app.sidebarOpen && $store.app.isMobile()) || !$store.app.isMobile(), // Show if (open on mobile) OR (is desktop)
+        '-translate-x-full': !$store.app.sidebarOpen && $store.app.isMobile() // Hide if (closed on mobile)
+     }"
+     class="fixed top-0 left-0 z-40 w-64 flex flex-col transform transition-transform duration-300 ease-in-out bg-gradient-to-b from-blue-800 to-blue-900 h-screen overflow-hidden pt-16">
 
     <!-- Sidebar Content -->
     <div class="flex flex-col flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-blue-600 scrollbar-track-transparent scrollbar-thumb-rounded-full scrollbar-w-1.5">

@@ -103,35 +103,46 @@
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.store('app', {
+                // Initial state set directly here
                 sidebarOpen: window.innerWidth >= 768,
                 toggleSidebar() {
                     this.sidebarOpen = !this.sidebarOpen;
                 },
-                closeSidebar() {
+                closeSidebar() { // Explicit close function
                     this.sidebarOpen = false;
                 },
-                isMobile() {
+                isMobile() { // Helper to check if mobile view
                     return window.innerWidth < 768;
                 }
             });
 
-            // Listen for window resize events to update sidebar state
+            // More robust resize handling
+            let currentModeIsDesktop = window.innerWidth >= 768;
+
             window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) {
-                    Alpine.store('app').sidebarOpen = true;
-                } else if (window.innerWidth < 768 && Alpine.store('app')) {
-                    Alpine.store('app').sidebarOpen = false;
+                const newModeIsDesktop = window.innerWidth >= 768;
+                const appStore = Alpine.store('app');
+                if (!appStore) return;
+
+                if (newModeIsDesktop !== currentModeIsDesktop) {
+                    // Breakpoint was crossed
+                    if (newModeIsDesktop) {
+                        // Switched to Desktop view: always open sidebar
+                        appStore.sidebarOpen = true;
+                    } else {
+                        // Switched to Mobile view: always close sidebar
+                        appStore.sidebarOpen = false;
+                    }
+                    currentModeIsDesktop = newModeIsDesktop;
                 }
+                // If breakpoint is not crossed (e.g., mobile-to-mobile resize),
+                // the sidebarOpen state remains as manually toggled by the user.
             });
 
-            // Initialize sidebar state on page load
-            if (window.innerWidth >= 768) {
-                setTimeout(() => {
-                    if (Alpine.store('app')) {
-                        Alpine.store('app').sidebarOpen = true;
-                    }
-                }, 50);
-            }
+            // The initial sidebarOpen state is already set when the store is defined.
+            // No need for the separate if (Alpine.store('app')) block for initialization here.
+
+
 
             // Dropdown functionality
             Alpine.data('dropdown', () => ({
@@ -155,6 +166,9 @@
             }));
         });
     </script>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

@@ -17,6 +17,8 @@ class ProductImport implements ToCollection, WithHeadingRow
      * @var array
      */
     protected $fields;
+    protected $columnMap = [];
+    protected $errors = [];
 
     /**
      * Create a new import instance.
@@ -24,9 +26,14 @@ class ProductImport implements ToCollection, WithHeadingRow
      * @param  array  $fields
      * @return void
      */
-    public function __construct(array $fields)
+    /**
+     * @param array $fields Fields to import (model fields)
+     * @param array $columnMap Map of model field => file column name
+     */
+    public function __construct(array $fields, array $columnMap = [])
     {
         $this->fields = $fields;
+        $this->columnMap = $columnMap;
     }
 
     /**
@@ -40,60 +47,69 @@ class ProductImport implements ToCollection, WithHeadingRow
 
             // Map fields from Excel to model
             foreach ($this->fields as $field) {
+                $column = $this->getColumnName($field);
                 switch ($field) {
                     case 'name':
                     case 'description':
                     case 'price':
                     case 'stock':
-                        if (isset($row[$this->getColumnName($field)])) {
-                            $productData[$field] = $row[$this->getColumnName($field)];
+                        if (isset($row[$column])) {
+                            $productData[$field] = $row[$column];
                         }
                         break;
                     case 'category_id':
-                        if (isset($row[$this->getColumnName($field)])) {
-                            $categoryName = $row[$this->getColumnName($field)];
+                        if (isset($row[$column])) {
+                            $categoryName = $row[$column];
                             $category = Category::where('name', $categoryName)->first();
                             if ($category) {
                                 $productData[$field] = $category->id;
+                            } else {
+                                $this->errors[] = "Row {$row['__rowNum__']}: Category '{$categoryName}' not found.";
                             }
                         }
                         break;
                     case 'is_featured':
-                        if (isset($row[$this->getColumnName($field)])) {
-                            $value = $row[$this->getColumnName($field)];
-                            $productData[$field] = in_array(strtolower($value), ['yes', '1', 'true']);
-                        }
-                        break;
                     case 'specifications':
-                        if (isset($row[$this->getColumnName($field)])) {
-                            $value = $row[$this->getColumnName($field)];
-                            $productData[$field] = is_string($value) ? json_decode($value, true) : $value;
-                        }
-                        break;
                     case 'available_from':
-                        if (isset($row[$this->getColumnName($field)])) {
-                            $value = $row[$this->getColumnName($field)];
-                            $productData[$field] = $value ? \Carbon\Carbon::parse($value) : null;
+                        if (isset($row[$column])) {
+                            $value = $row[$column];
+                            switch ($field) {
+                                case 'is_featured':
+                                    $productData[$field] = in_array(strtolower($value), ['yes', '1', 'true']);
+                                    break;
+                                case 'specifications':
+                                    $productData[$field] = is_string($value) ? json_decode($value, true) : $value;
+                                    break;
+                                case 'available_from':
+                                    $productData[$field] = $value ? \Carbon\Carbon::parse($value) : null;
+                                    break;
+                            }
                         }
                         break;
                 }
             }
 
             // Only proceed if we have a name and category_id
-            if (!empty($productData['name']) && !empty($productData['category_id'])) {
-                // Check if product exists by name and category
-                $product = Product::where('name', $productData['name'])
-                                ->where('category_id', $productData['category_id'])
-                                ->first();
+            if (empty($productData['name'])) {
+                $this->errors[] = "Row {$row['__rowNum__']}: Missing product name.";
+                continue;
+            }
+            if (empty($productData['category_id'])) {
+                $this->errors[] = "Row {$row['__rowNum__']}: Missing or invalid category.";
+                continue;
+            }
+            // Check if product exists by name and category
+            $product = Product::where('name', $productData['name'])
+                            ->where('category_id', $productData['category_id'])
+                            ->first();
 
-                if ($product) {
-                    // Update existing product
-                    $product->update($productData);
-                } else {
-                    // Create new product with UUID
-                    $productData['uuid'] = (string) Str::uuid();
-                    Product::create($productData);
-                }
+            if ($product) {
+                // Update existing product
+                $product->update($productData);
+            } else {
+                // Create new product with UUID
+                $productData['uuid'] = (string) Str::uuid();
+                Product::create($productData);
             }
         }
     }
@@ -106,22 +122,7 @@ class ProductImport implements ToCollection, WithHeadingRow
      */
     private function getColumnName($field)
     {
-        // Map field names to Excel column names
-        $columnMap = [
-            'id' => 'id',
-            'uuid' => 'uuid',
-            'category_id' => 'category',
-            'name' => 'name',
-            'description' => 'description',
-            'price' => 'price',
-            'stock' => 'stock',
-            'is_featured' => 'featured',
-            'specifications' => 'specifications',
-            'available_from' => 'available_from',
-            'created_at' => 'created_at',
-            'updated_at' => 'updated_at',
-        ];
-
-        return $columnMap[$field] ?? $field;
+        // Use user-provided mapping if available
+        return $this->columnMap[$field] ?? $field;
     }
 }

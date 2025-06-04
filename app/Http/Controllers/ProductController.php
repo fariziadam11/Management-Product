@@ -7,6 +7,8 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Imports\ProductsImport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -265,5 +267,47 @@ class ProductController extends Controller
 
         return redirect()->route('products.index')
             ->with('success', 'Product deleted successfully.');
+    }
+
+    /**
+     * Import products from Excel/CSV file.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => [
+                'required',
+                'file',
+                'mimes:xlsx,xls,csv',
+                'max:10240', // 10MB
+            ],
+        ]);
+
+        try {
+            $import = new ProductsImport;
+            Excel::import($import, $request->file('file'));
+
+            if ($import->failures()->isNotEmpty()) {
+                return back()->withErrors([
+                    'import' => $import->failures()->map(function ($failure) {
+                        return "Row {$failure->row()}: " . implode(', ', $failure->errors());
+                    })->toArray()
+                ]);
+            }
+
+            return back()->with('success', 'Products imported successfully!');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            return back()->withErrors([
+                'import' => collect($failures)->map(function ($failure) {
+                    return "Row {$failure->row()}: " . implode(', ', $failure->errors());
+                })->toArray()
+            ]);
+        } catch (\Exception $e) {
+            return back()->withErrors(['import' => 'Import failed: ' . $e->getMessage()]);
+        }
     }
 }
