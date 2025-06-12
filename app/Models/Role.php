@@ -68,6 +68,9 @@ class Role extends Model implements Auditable
      */
     public function getPermissions()
     {
+        if (is_array($this->permissions)) {
+            return $this->permissions;
+        }
         return json_decode($this->permissions, true) ?: [];
     }
 

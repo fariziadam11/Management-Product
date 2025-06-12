@@ -19,7 +19,7 @@ class UserController extends Controller
     {
         // Administrator role check will be applied in routes
     }
-    
+
     /**
      * Display a listing of the users.
      *
@@ -29,7 +29,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $query = User::with('role');
-        
+
         // Search functionality
         if ($request->has('search')) {
             $search = $request->input('search');
@@ -38,17 +38,17 @@ class UserController extends Controller
                   ->orWhere('email', 'like', "%{$search}%");
             });
         }
-        
+
         // Sorting functionality
         $sortField = $request->input('sort_by', 'created_at');
         $sortDirection = $request->input('sort_direction', 'desc');
         $query->orderBy($sortField, $sortDirection);
-        
+
         // Filter by role
         if ($request->has('role_id') && $request->input('role_id') !== '') {
             $query->where('role_id', $request->input('role_id'));
         }
-        
+
         // Filter by active status
         if ($request->has('is_active')) {
             $isActive = $request->input('is_active');
@@ -56,13 +56,13 @@ class UserController extends Controller
                 $query->where('is_active', $isActive);
             }
         }
-        
+
         $users = $query->paginate(10);
         $roles = Role::all();
-        
+
         return view('users.index', compact('users', 'roles'));
     }
-    
+
     /**
      * Show the form for creating a new user.
      *
@@ -73,7 +73,7 @@ class UserController extends Controller
         $roles = Role::where('is_active', true)->get();
         return view('users.create', compact('roles'));
     }
-    
+
     /**
      * Store a newly created user in storage.
      *
@@ -89,13 +89,13 @@ class UserController extends Controller
             'role_id' => 'required|exists:roles,id',
             'is_active' => 'boolean',
         ]);
-        
+
         if ($validator->fails()) {
             return redirect()->route('users.create')
                 ->withErrors($validator)
                 ->withInput();
         }
-        
+
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -104,11 +104,11 @@ class UserController extends Controller
             'is_active' => $request->input('is_active', true),
             'preferences' => $request->input('preferences', []),
         ]);
-        
+
         return redirect()->route('users.index')
             ->with('success', 'User created successfully.');
     }
-    
+
     /**
      * Display the specified user.
      *
@@ -119,7 +119,7 @@ class UserController extends Controller
     {
         return view('users.show', compact('user'));
     }
-    
+
     /**
      * Show the form for editing the specified user.
      *
@@ -129,9 +129,10 @@ class UserController extends Controller
     public function edit(User $user)
     {
         $roles = Role::where('is_active', true)->get();
-        return view('users.edit', compact('user', 'roles'));
+        $audits = $user->audits()->with('user')->latest()->get();
+        return view('users.edit', compact('user', 'roles', 'audits'));
     }
-    
+
     /**
      * Update the specified user in storage.
      *
@@ -147,20 +148,20 @@ class UserController extends Controller
             'role_id' => 'required|exists:roles,id',
             'is_active' => 'boolean',
         ];
-        
+
         // Only validate password if it's provided
         if ($request->filled('password')) {
             $rules['password'] = 'required|string|min:8|confirmed';
         }
-        
+
         $validator = Validator::make($request->all(), $rules);
-        
+
         if ($validator->fails()) {
             return redirect()->route('users.edit', $user)
                 ->withErrors($validator)
                 ->withInput();
         }
-        
+
         $userData = [
             'name' => $request->input('name'),
             'email' => $request->input('email'),
@@ -168,18 +169,18 @@ class UserController extends Controller
             'is_active' => $request->input('is_active', true),
             'preferences' => $request->input('preferences', []),
         ];
-        
+
         // Only update password if it's provided
         if ($request->filled('password')) {
             $userData['password'] = Hash::make($request->input('password'));
         }
-        
+
         $user->update($userData);
-        
+
         return redirect()->route('users.index')
             ->with('success', 'User updated successfully.');
     }
-    
+
     /**
      * Remove the specified user from storage.
      *
@@ -193,13 +194,13 @@ class UserController extends Controller
             return redirect()->route('users.index')
                 ->with('error', 'You cannot delete your own account.');
         }
-        
+
         $user->delete();
-        
+
         return redirect()->route('users.index')
             ->with('success', 'User deleted successfully.');
     }
-    
+
     /**
      * Update the user's password.
      *
@@ -214,25 +215,25 @@ class UserController extends Controller
             'current_password' => 'required',
             'password' => 'required|string|min:8|confirmed',
         ]);
-        
+
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
-        
+
         // Check if current password is correct
         if (!Hash::check($request->input('current_password'), $user->password)) {
             return redirect()->back()
                 ->withErrors(['current_password' => 'The current password is incorrect.'])
                 ->withInput();
         }
-        
+
         // Update password
         $user->update([
             'password' => Hash::make($request->input('password')),
         ]);
-        
+
         return redirect()->back()
             ->with('success', 'Password updated successfully.');
     }

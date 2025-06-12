@@ -74,15 +74,9 @@ class User extends Authenticatable implements Auditable
      * @param string $roleName
      * @return bool
      */
-    /**
-     * Check if user has a specific role
-     *
-     * @param string $roleName
-     * @return bool
-     */
     public function hasRole($roleName)
     {
-        return $this->role && $this->role->name === $roleName;
+        return $this->role && strtolower($this->role->name) === strtolower($roleName);
     }
 
     /**

@@ -170,12 +170,35 @@
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- Select2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
         // Initialize Select2 after DOM is fully loaded
         document.addEventListener('DOMContentLoaded', function() {
+            // Show error messages using SweetAlert2
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '{{ session('error') }}',
+                    confirmButtonColor: '#3085d6',
+                });
+            @endif
+
+            // Show success messages using SweetAlert2
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#3085d6',
+                });
+            @endif
+
             // Small delay to ensure all elements are available
             setTimeout(function() {
                 if (typeof $ !== 'undefined' && $.fn.select2) {

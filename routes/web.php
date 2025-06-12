@@ -37,7 +37,7 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('roles', RoleController::class);
 
     // User management (only accessible to administrators)
-    Route::middleware(['role:admin'])->group(function () {
+    Route::middleware(['role:admin|Test|manager'])->group(function () {
         Route::resource('users', UserController::class);
     });
 

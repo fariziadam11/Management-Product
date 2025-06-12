@@ -113,13 +113,17 @@
                                     <a href="{{ route('roles.show', $role) }}" class="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 p-1.5 rounded-md transition-colors duration-150">
                                         <i class="bi bi-eye"></i>
                                     </a>
+                                    @if(auth()->user()->hasRole('admin'))
                                     <a href="{{ route('roles.edit', $role) }}" class="text-indigo-600 hover:text-indigo-900 bg-indigo-100 hover:bg-indigo-200 p-1.5 rounded-md transition-colors duration-150">
                                         <i class="bi bi-pencil"></i>
                                     </a>
+                                    @endif
+                                    @if(auth()->user()->hasRole('admin'))
                                     <button type="button" class="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 p-1.5 rounded-md transition-colors duration-150"
                                             onclick="document.getElementById('modal-{{ $role->id }}').classList.remove('hidden')">
                                         <i class="bi bi-trash"></i>
                                     </button>
+                                    @endif
                                 </div>
 
                                 <!-- Delete Modal -->

@@ -3,7 +3,7 @@
 @section('page_heading', 'User Management')
 
 @section('page_actions')
-@if(auth()->user()->hasAnyRole('admin', 'manager', 'editor'))
+@if(auth()->user()->hasAnyRole('admin', 'manager', 'editor', 'Test'))
 <a href="{{ route('users.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200">
     <i class="bi bi-person-plus mr-2"></i> Add User
 </a>
@@ -81,7 +81,7 @@
             </h3>
             <div class="flex mt-2 sm:mt-0">
                 <div class="flex space-x-2">
-                    @if(auth()->user()->hasAnyRole('admin', 'manager', 'editor'))
+                    @if(auth()->user()->hasAnyRole('admin', 'manager', 'editor', 'Test'))
                     <a href="{{ route('users.create') }}" class="inline-flex items-center px-3 py-1.5 bg-blue-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                         <i class="bi bi-person-plus mr-1.5"></i> Create User
                     </a>

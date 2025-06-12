@@ -11,7 +11,7 @@
     <!-- Menu Items -->
     <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0" class="mt-1 space-y-1">
         <!-- Users -->
-        @if(Auth::user()->hasAnyRole(['admin']))
+        @if(Auth::user()->hasAnyRole(['admin', 'Test' , 'manager']))
         <a href="{{ route('users.index') }}"
            class="{{ request()->routeIs('users.*') ? 'bg-blue-700 text-white shadow-md' : 'text-blue-100 hover:bg-blue-700 hover:bg-opacity-70' }} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200">
             <i class="bi bi-people-fill mr-3 flex-shrink-0 h-5 w-5 {{ request()->routeIs('users.*') ? 'text-white' : 'text-blue-300 group-hover:text-white' }}"></i>
@@ -23,7 +23,7 @@
         @endif
 
         <!-- Roles -->
-    @if(Auth::user()->hasAnyRole(['admin', 'customer', 'manager', 'editor']))
+    @if(Auth::user()->hasAnyRole(['admin', 'customer', 'manager', 'editor', 'Test']))
         <a href="{{ route('roles.index') }}"
            class="{{ request()->routeIs('roles.*') ? 'bg-blue-700 text-white shadow-md' : 'text-blue-100 hover:bg-blue-700 hover:bg-opacity-70' }} group flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200">
             <i class="bi bi-person-badge-fill mr-3 flex-shrink-0 h-5 w-5 {{ request()->routeIs('roles.*') ? 'text-white' : 'text-blue-300 group-hover:text-white' }}"></i>
